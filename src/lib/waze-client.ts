@@ -36,7 +36,7 @@ const createWazeTestClient = Effect.gen(function* () {
       schedule: Schedule.spaced("1 second"),
     }),
     HttpClient.mapRequest((request) =>
-      request.pipe(HttpClientRequest.prependUrl("http://localhost:3000/api")),
+      request.pipe(HttpClientRequest.prependUrl(`${env.BASE_URL}/api`)),
     ),
   );
   return wazeTestClient;

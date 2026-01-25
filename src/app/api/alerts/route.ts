@@ -1,44 +1,32 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
+import { FileSystem } from "@effect/platform";
+import { NodeFileSystem } from "@effect/platform-node";
+import { Effect } from "effect";
 
-async function getTestAlerts() {
-  try {
-    const filePath = path.join(process.cwd(), "public", "alerts.json");
-    const raw = await readFile(filePath, "utf8");
+const getTestAlerts = Effect.gen(function* () {
+  const fs = yield* FileSystem.FileSystem;
 
-    const parsed = JSON.parse(raw);
+  const raw = yield* fs.readFileString(process.cwd() + "/public/alerts.json");
 
-    if (!Array.isArray(parsed)) {
-      throw new Error("alerts.json must be a JSON array");
-    }
+  const alerts = yield* Effect.try({
+    try: () => {
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) {
+        throw new Error("alerts.json must be a JSON array");
+      }
+      return parsed as Array<Record<string, unknown>>;
+    },
+    catch: (cause) =>
+      new Error(`Failed to read/parse ./public/alerts.json: ${String(cause)}`),
+  });
 
-    // Keep parity with your original typing intent:
-    // Array<Record<string, unknown>> in TS -> array of plain objects in JS.
-    return parsed;
-  } catch (err) {
-    throw new Error(
-      `Failed to read/parse ./public/alerts.json: ${err instanceof Error ? err.message : String(err)}`,
-    );
-  }
-}
+  return alerts;
+}).pipe(Effect.provide(NodeFileSystem.layer));
 
-export const GET = async () => {
-  try {
-    const alerts = await getTestAlerts();
+export const GET = async (_: Request) => {
+  const alerts = await Effect.runPromise(getTestAlerts);
 
-    return new Response(JSON.stringify(alerts), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (err) {
-    return new Response(
-      JSON.stringify({
-        error: err instanceof Error ? err.message : String(err),
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      },
-    );
-  }
+  return new Response(JSON.stringify(alerts), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 };
