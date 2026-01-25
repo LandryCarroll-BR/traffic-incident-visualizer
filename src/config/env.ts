@@ -13,7 +13,7 @@ const createEnv = () => {
   const envVars = {
     BASE_URL:
       process.env.BASE_URL ||
-      "https://" + process.env.VERCEL_URL ||
+      "https://" + process.env.VERCEL_BRANCH_URL ||
       "http://localhost:3000",
     DATABASE_URL: process.env.DATABASE_URL,
     WAZE_RAPID_API_BASE_URL: process.env.WAZE_RAPID_API_BASE_URL,
