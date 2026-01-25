@@ -40,28 +40,31 @@ const readAlertsFromPublicUrl = (origin: string) =>
 export const GET = async (request: Request) => {
   const origin = new URL(request.url).origin;
 
-  const alerts = await Effect.runPromise(
+  return await Effect.runPromise(
     readAlertsFromPublicUrl(origin)
       .pipe(
         // Local/dev fallback (or if fetch is blocked in some environment)
         Effect.catchAll(() => readAlertsFromFs),
       )
       .pipe(
+        Effect.andThen((res) =>
+          Effect.succeed(
+            new Response(JSON.stringify(res), {
+              status: 200,
+              headers: { "Content-Type": "application/json" },
+            }),
+          ),
+        ),
         Effect.catchTags({
           BadArgument: (cause) =>
-            Effect.fail(
+            Effect.succeed(
               new Response(`Bad request: ${cause.message}`, { status: 400 }),
             ),
           SystemError: (cause) =>
-            Effect.fail(
+            Effect.succeed(
               new Response(`Server error: ${cause.message}`, { status: 500 }),
             ),
         }),
       ),
   );
-
-  return new Response(JSON.stringify(alerts), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
 };
