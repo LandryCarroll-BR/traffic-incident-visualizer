@@ -41,10 +41,23 @@ export const GET = async (request: Request) => {
   const origin = new URL(request.url).origin;
 
   const alerts = await Effect.runPromise(
-    readAlertsFromPublicUrl(origin).pipe(
-      // Local/dev fallback (or if fetch is blocked in some environment)
-      Effect.catchAll(() => readAlertsFromFs),
-    ),
+    readAlertsFromPublicUrl(origin)
+      .pipe(
+        // Local/dev fallback (or if fetch is blocked in some environment)
+        Effect.catchAll(() => readAlertsFromFs),
+      )
+      .pipe(
+        Effect.catchTags({
+          BadArgument: (cause) =>
+            Effect.fail(
+              new Response(`Bad request: ${cause.message}`, { status: 400 }),
+            ),
+          SystemError: (cause) =>
+            Effect.fail(
+              new Response(`Server error: ${cause.message}`, { status: 500 }),
+            ),
+        }),
+      ),
   );
 
   return new Response(JSON.stringify(alerts), {
