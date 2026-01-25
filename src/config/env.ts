@@ -3,6 +3,7 @@ import "dotenv/config";
 
 const createEnv = () => {
   const EnvSchema = S.Struct({
+    BASE_URL: S.String,
     DATABASE_URL: S.String,
     WAZE_RAPID_API_BASE_URL: S.String,
     WAZE_RAPID_API_HOST: S.String,
@@ -10,6 +11,10 @@ const createEnv = () => {
   });
 
   const envVars = {
+    BASE_URL:
+      process.env.BASE_URL ||
+      "https://" + process.env.VERCEL_URL ||
+      "http://localhost:3000",
     DATABASE_URL: process.env.DATABASE_URL,
     WAZE_RAPID_API_BASE_URL: process.env.WAZE_RAPID_API_BASE_URL,
     WAZE_RAPID_API_HOST: process.env.WAZE_RAPID_API_HOST,

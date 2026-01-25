@@ -1,0 +1,832 @@
+[
+  {
+    "id": "alert-1173264100/4957767b-4119-4e4b-a0f9-310f1dae8c68",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_EMERGENCY_VEHICLE",
+    "reliability": 6,
+    "locationY": 28.688604,
+    "locationX": -81.340683,
+    "timestamp": 1769363080000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:44:40 GMT"
+  },
+  {
+    "id": "alert-1173272847/12158b48-a4ba-402e-9722-841f3d034036",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 7,
+    "locationY": 28.47024,
+    "locationX": -81.459275,
+    "timestamp": 1769363077000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:44:37 GMT"
+  },
+  {
+    "id": "alert-1173272912/dc981118-5342-4cec-bc4a-1c2f43c18b80",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_EMERGENCY_VEHICLE",
+    "reliability": 6,
+    "locationY": 28.688605,
+    "locationX": -81.340545,
+    "timestamp": 1769363071000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:44:31 GMT"
+  },
+  {
+    "id": "alert-1173276814/dbe60e1b-b485-4e35-ae34-e1b4ea414a61",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 9,
+    "locationY": 28.386775,
+    "locationX": -81.496526,
+    "timestamp": 1769363058000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:44:18 GMT"
+  },
+  {
+    "id": "alert-1173259119/ba90b5cd-3b18-412d-b5e4-c0b5701de7bd",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 6,
+    "locationY": 28.444924,
+    "locationX": -81.309859,
+    "timestamp": 1769363036000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:43:56 GMT"
+  },
+  {
+    "id": "alert-1173272738/5d33a701-a24e-4c45-958e-6a70fdefb6bb",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 6,
+    "locationY": 28.377729,
+    "locationX": -81.487373,
+    "timestamp": 1769363030000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:43:50 GMT"
+  },
+  {
+    "id": "alert-1173289782/6fbba16d-83d5-4679-ac98-e2d526c509ca",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_EMERGENCY_VEHICLE",
+    "reliability": 6,
+    "locationY": 28.450709,
+    "locationX": -81.464895,
+    "timestamp": 1769362996000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:43:16 GMT"
+  },
+  {
+    "id": "alert-1173276333/52e370cc-db42-4411-83ca-0f3d17b49cb8",
+    "type": "POLICE",
+    "subType": "POLICE_HIDING",
+    "reliability": 6,
+    "locationY": 28.392627,
+    "locationX": -81.46684,
+    "timestamp": 1769362904000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:41:44 GMT"
+  },
+  {
+    "id": "alert-1173263494/7fe07521-105e-4a46-a0b2-2a788cc02385",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.510132,
+    "locationX": -81.425888,
+    "timestamp": 1769362897000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:41:37 GMT"
+  },
+  {
+    "id": "alert-1173254364/0ed7483c-f2b5-4fe6-bd52-cdd889ac7be9",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.50944,
+    "locationX": -81.421002,
+    "timestamp": 1769362849000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:40:49 GMT"
+  },
+  {
+    "id": "alert-1173258440/242b795c-05d2-4753-a7c7-3f8512bd724b",
+    "type": "POLICE",
+    "subType": "POLICE_HIDING",
+    "reliability": 6,
+    "locationY": 28.508087,
+    "locationX": -81.418274,
+    "timestamp": 1769362800000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:40:00 GMT"
+  },
+  {
+    "id": "alert-1173267801/633b3a1b-d119-4d9e-9f18-cbdb4959fbf6",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_EMERGENCY_VEHICLE",
+    "reliability": 6,
+    "locationY": 28.655969,
+    "locationX": -81.425549,
+    "timestamp": 1769362795000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:39:55 GMT"
+  },
+  {
+    "id": "alert-1173276053/ea26fef6-99ac-49a3-be7a-bf6e715e2b5d",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_EMERGENCY_VEHICLE",
+    "reliability": 6,
+    "locationY": 28.697859,
+    "locationX": -81.337714,
+    "timestamp": 1769362785000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:39:45 GMT"
+  },
+  {
+    "id": "alert-1173285102/d2fc7ef6-64b4-4f27-9632-2970bf0b17ca",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_EMERGENCY_VEHICLE",
+    "reliability": 6,
+    "locationY": 28.656092,
+    "locationX": -81.425404,
+    "timestamp": 1769362780000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:39:40 GMT"
+  },
+  {
+    "id": "alert-1173263151/51be366c-ca82-4e53-995e-010ef0f3544a",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 6,
+    "locationY": 28.364783,
+    "locationX": -81.538409,
+    "timestamp": 1769362778000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:39:38 GMT"
+  },
+  {
+    "id": "alert-1173285009/f59cf136-6e60-4d95-988e-e5f19bc4d7e4",
+    "type": "JAM",
+    "subType": "JAM_HEAVY_TRAFFIC",
+    "reliability": 5,
+    "locationY": 28.380296,
+    "locationX": -81.501925,
+    "timestamp": 1769362775000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:39:35 GMT"
+  },
+  {
+    "id": "alert-1173267624/f94f4266-9781-4743-a023-8914b533254e",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.507458,
+    "locationX": -81.41983,
+    "timestamp": 1769362760000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:39:20 GMT"
+  },
+  {
+    "id": "alert-1173254193/ddcb02db-bd0e-4d0d-8abe-1f321a6a1f64",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_EMERGENCY_VEHICLE",
+    "reliability": 6,
+    "locationY": 28.655945,
+    "locationX": -81.425577,
+    "timestamp": 1769362758000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:39:18 GMT"
+  },
+  {
+    "id": "alert-1173275819/03311698-6790-4cb0-a3cb-793f378847e0",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 9,
+    "locationY": 28.535119,
+    "locationX": -81.387592,
+    "timestamp": 1769362723000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:38:43 GMT"
+  },
+  {
+    "id": "alert-1173258148/606b87ae-7222-48ba-afe9-3f19a3664839",
+    "type": "ACCIDENT",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.529217,
+    "locationX": -81.463263,
+    "timestamp": 1769362702000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:38:22 GMT"
+  },
+  {
+    "id": "alert-1173271775/2a119733-4da2-49ac-bc5f-14c5d88b5c2b",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 10,
+    "locationY": 28.489218,
+    "locationX": -81.458115,
+    "timestamp": 1769362695000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:38:15 GMT"
+  },
+  {
+    "id": "alert-1173267387/43ba0861-8ec9-441e-9c49-3b8dcab2440e",
+    "type": "POLICE",
+    "subType": "POLICE_HIDING",
+    "reliability": 10,
+    "locationY": 28.637454,
+    "locationX": -81.404068,
+    "timestamp": 1769362691000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:38:11 GMT"
+  },
+  {
+    "id": "alert-1173271729/739b137b-4cdc-47cf-a40e-e672bdb4cb22",
+    "type": "POLICE",
+    "subType": "POLICE_HIDING",
+    "reliability": 5,
+    "locationY": 28.659124,
+    "locationX": -81.380775,
+    "timestamp": 1769362673000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:37:53 GMT"
+  },
+  {
+    "id": "alert-1173275615/6a7588d1-7a7a-4525-a760-e38ec7ea42d9",
+    "type": "JAM",
+    "subType": "JAM_HEAVY_TRAFFIC",
+    "reliability": 6,
+    "locationY": 28.397763,
+    "locationX": -81.486683,
+    "timestamp": 1769362659000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:37:39 GMT"
+  },
+  {
+    "id": "alert-1173271647/9de5fd9d-03ea-460a-9bda-1b330a9624dd",
+    "type": "JAM",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.439358,
+    "locationX": -81.469993,
+    "timestamp": 1769362645000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:37:25 GMT"
+  },
+  {
+    "id": "alert-1173271320/e67f4cce-3fd0-41d2-8458-675b6f9ed292",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD",
+    "reliability": 5,
+    "locationY": 28.367184,
+    "locationX": -81.519403,
+    "timestamp": 1769362525000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:35:25 GMT"
+  },
+  {
+    "id": "alert-1173275108/68a7b1fa-1576-4bd2-bdf0-7729bec31194",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_TRAFFIC_LIGHT_FAULT",
+    "reliability": 5,
+    "locationY": 28.450271,
+    "locationX": -81.451929,
+    "timestamp": 1769362470000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:34:30 GMT"
+  },
+  {
+    "id": "alert-1173279789/85eec04f-e241-47ee-a53a-e43bc17658f8",
+    "type": "ACCIDENT",
+    "subType": "ACCIDENT_MINOR",
+    "reliability": 6,
+    "locationY": 28.564332,
+    "locationX": -81.517382,
+    "timestamp": 1769362391000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:33:11 GMT"
+  },
+  {
+    "id": "alert-1173270988/77775573-82c2-4527-8c7b-a756e5a699ba",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_EMERGENCY_VEHICLE",
+    "reliability": 6,
+    "locationY": 28.651189,
+    "locationX": -81.344202,
+    "timestamp": 1769362320000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:32:00 GMT"
+  },
+  {
+    "id": "alert-1173244006/ad0a023f-0d7a-46c5-b3c2-108098816446",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 10,
+    "locationY": 28.374552,
+    "locationX": -81.50748,
+    "timestamp": 1769362295000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:31:35 GMT"
+  },
+  {
+    "id": "alert-1173261662/50909f8b-06cd-4964-9d45-747e51069409",
+    "type": "JAM",
+    "subType": "JAM_HEAVY_TRAFFIC",
+    "reliability": 5,
+    "locationY": 28.612167,
+    "locationX": -81.278493,
+    "timestamp": 1769362256000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:30:56 GMT"
+  },
+  {
+    "id": "alert-1173265995/7d4324a9-6c1b-4a25-b1b4-a36f7baede4d",
+    "type": "JAM",
+    "subType": "JAM_HEAVY_TRAFFIC",
+    "reliability": 5,
+    "locationY": 28.563844,
+    "locationX": -81.517387,
+    "timestamp": 1769362184000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:29:44 GMT"
+  },
+  {
+    "id": "alert-1173239254/161c721b-af85-4177-89da-25100004d11a",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 7,
+    "locationY": 28.563844,
+    "locationX": -81.517387,
+    "timestamp": 1769362167000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:29:27 GMT"
+  },
+  {
+    "id": "alert-1173265920/64df1785-a189-4939-8f36-18c72c5452c6",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 5,
+    "locationY": 28.563266,
+    "locationX": -81.517391,
+    "timestamp": 1769362161000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:29:21 GMT"
+  },
+  {
+    "id": "alert-1173253052/a4e49cc0-5a2e-4f57-b53c-39587e623f1f",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_EMERGENCY_VEHICLE",
+    "reliability": 6,
+    "locationY": 28.587676,
+    "locationX": -81.306598,
+    "timestamp": 1769362141000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:29:01 GMT"
+  },
+  {
+    "id": "alert-1173256540/704101fd-7cbf-4ef9-8420-6675b3b62fab",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.45018,
+    "locationX": -81.449816,
+    "timestamp": 1769362128000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:28:48 GMT"
+  },
+  {
+    "id": "alert-1173243563/a8c72aff-16e6-45a8-803e-cff007d90460",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 7,
+    "locationY": 28.678318,
+    "locationX": -81.331155,
+    "timestamp": 1769362128000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:28:48 GMT"
+  },
+  {
+    "id": "alert-1173248135/41fab9bd-af0e-4ca4-9b3d-81b11bb4cbca",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 6,
+    "locationY": 28.678294,
+    "locationX": -81.331839,
+    "timestamp": 1769362116000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:28:36 GMT"
+  },
+  {
+    "id": "alert-1173252217/daf30183-bdac-4b10-a69a-59980abba8a9",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.508097,
+    "locationX": -81.310162,
+    "timestamp": 1769362116000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:28:36 GMT"
+  },
+  {
+    "id": "alert-1173239059/1ecc2714-b236-4b26-bd47-a8d65fe0ac66",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.641025,
+    "locationX": -81.211088,
+    "timestamp": 1769362098000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:28:18 GMT"
+  },
+  {
+    "id": "alert-1173261138/20f1d18a-e0d3-4bf5-9b12-ab7a6955bece",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.640984,
+    "locationX": -81.214296,
+    "timestamp": 1769362082000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:28:02 GMT"
+  },
+  {
+    "id": "alert-1173252100/047e3066-89a9-49af-9313-07a34cf4c814",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 7,
+    "locationY": 28.640957,
+    "locationX": -81.217072,
+    "timestamp": 1769362070000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:27:50 GMT"
+  },
+  {
+    "id": "alert-1173269892/ed527284-720d-4c5e-b4cc-ea1dd6de2b08",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 7,
+    "locationY": 28.640874,
+    "locationX": -81.224661,
+    "timestamp": 1769362034000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:27:14 GMT"
+  },
+  {
+    "id": "alert-1173243205/3f92fbfd-cdae-4a52-9c2d-a7f784bb1776",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 10,
+    "locationY": 28.450128,
+    "locationX": -81.449139,
+    "timestamp": 1769362032000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:27:12 GMT"
+  },
+  {
+    "id": "alert-1173269853/f7878044-6a4f-4083-b77f-f4dcb53ac5bf",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 10,
+    "locationY": 28.651711,
+    "locationX": -81.54413,
+    "timestamp": 1769362029000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:27:09 GMT"
+  },
+  {
+    "id": "alert-1173269757/c552d73b-3833-49ea-bdb0-158d1508ed8c",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 10,
+    "locationY": 28.537051,
+    "locationX": -81.374722,
+    "timestamp": 1769361988000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:26:28 GMT"
+  },
+  {
+    "id": "alert-1173247720/93a6a407-711b-43b3-a862-511bafd54561",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.458127,
+    "locationX": -81.385155,
+    "timestamp": 1769361987000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:26:27 GMT"
+  },
+  {
+    "id": "alert-1173243014/8717eb1e-6707-49a0-b943-8105e31dce64",
+    "type": "POLICE",
+    "subType": "POLICE_HIDING",
+    "reliability": 8,
+    "locationY": 28.565671,
+    "locationX": -81.355917,
+    "timestamp": 1769361963000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:26:03 GMT"
+  },
+  {
+    "id": "alert-1173269669/90d2fae6-02d2-4dbd-ab01-65d2efd886e1",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 9,
+    "locationY": 28.647332,
+    "locationX": -81.288234,
+    "timestamp": 1769361954000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:25:54 GMT"
+  },
+  {
+    "id": "alert-1173265225/f9d37663-9f33-40ee-8e19-aba95574f10c",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 7,
+    "locationY": 28.556364,
+    "locationX": -81.376898,
+    "timestamp": 1769361934000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:25:34 GMT"
+  },
+  {
+    "id": "alert-1173247577/93899942-d04e-464c-a86c-a3edc0a65e07",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_CONSTRUCTION",
+    "reliability": 8,
+    "locationY": 28.621042,
+    "locationX": -81.443887,
+    "timestamp": 1769361922000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:25:22 GMT"
+  },
+  {
+    "id": "alert-1173260335/cf0152c4-6a12-4cb6-afa8-562a1b25913d",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.690362,
+    "locationX": -81.324197,
+    "timestamp": 1769361797000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:23:17 GMT"
+  },
+  {
+    "id": "alert-1173251186/7005ab79-51d6-4d85-b3e1-bfdc0f476ba7",
+    "type": "JAM",
+    "subType": "JAM_HEAVY_TRAFFIC",
+    "reliability": 5,
+    "locationY": 28.376293,
+    "locationX": -81.50592,
+    "timestamp": 1769361762000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:22:42 GMT"
+  },
+  {
+    "id": "alert-1173246928/248087af-8dce-40cc-b4a8-a2b1cfcfab35",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.54939,
+    "locationX": -81.378973,
+    "timestamp": 1769361692000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:21:32 GMT"
+  },
+  {
+    "id": "alert-1173260017/2538239a-252a-4647-84ae-311dcd762b2f",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 8,
+    "locationY": 28.634256,
+    "locationX": -81.452779,
+    "timestamp": 1769361687000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:21:27 GMT"
+  },
+  {
+    "id": "alert-1173233837/c2aa3884-9541-4519-a37d-bde2cf47e95f",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.549389,
+    "locationX": -81.379008,
+    "timestamp": 1769361664000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:21:04 GMT"
+  },
+  {
+    "id": "alert-1173259649/fab68eb8-78b1-4da0-b92e-346f7a8241ab",
+    "type": "POLICE",
+    "subType": "POLICE_HIDING",
+    "reliability": 7,
+    "locationY": 28.67193,
+    "locationX": -81.338104,
+    "timestamp": 1769361568000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:19:28 GMT"
+  },
+  {
+    "id": "alert-1173259518/6dcaa2d1-dd37-464d-93cf-cfe6b1cab136",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_OBJECT",
+    "reliability": 6,
+    "locationY": 28.568564,
+    "locationX": -81.223736,
+    "timestamp": 1769361526000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:18:46 GMT"
+  },
+  {
+    "id": "alert-1173233327/d6b18b94-9a0e-4bbd-90e4-cc7799e1c76e",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.480847,
+    "locationX": -81.331529,
+    "timestamp": 1769361506000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:18:26 GMT"
+  },
+  {
+    "id": "alert-1173254645/388dba48-c08c-4cf1-8cdc-40b4788336a8",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 5,
+    "locationY": 28.390693,
+    "locationX": -81.532704,
+    "timestamp": 1769361474000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:17:54 GMT"
+  },
+  {
+    "id": "alert-1173250327/14888107-a39d-4083-94ed-9389b2a2341f",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_OBJECT",
+    "reliability": 8,
+    "locationY": 28.568855,
+    "locationX": -81.226322,
+    "timestamp": 1769361464000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:17:44 GMT"
+  },
+  {
+    "id": "alert-1173237052/6c49b467-d9a7-4691-91b8-74642c8d594b",
+    "type": "POLICE",
+    "subType": "POLICE_HIDING",
+    "reliability": 8,
+    "locationY": 28.36677,
+    "locationX": -81.2811,
+    "timestamp": 1769361406000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:16:46 GMT"
+  },
+  {
+    "id": "alert-1173228644/a09ab5ab-505f-4a6e-8538-03debbbdc08b",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 7,
+    "locationY": 28.512154,
+    "locationX": -81.256577,
+    "timestamp": 1769361384000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:16:24 GMT"
+  },
+  {
+    "id": "alert-1173250101/3eb99f3f-6331-4b07-b202-446e3cfdbeeb",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 9,
+    "locationY": 28.480466,
+    "locationX": -81.337127,
+    "timestamp": 1769361379000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:16:19 GMT"
+  },
+  {
+    "id": "alert-1173224021/8a0ea883-6375-46f9-ab58-694b0a2f7007",
+    "type": "POLICE",
+    "subType": "POLICE_HIDING",
+    "reliability": 8,
+    "locationY": 28.393091,
+    "locationX": -81.529369,
+    "timestamp": 1769361353000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:15:53 GMT"
+  },
+  {
+    "id": "alert-1173236916/6b9ba7d3-7a42-490e-a6c0-6fb7993608a3",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 10,
+    "locationY": 28.569165,
+    "locationX": -81.244125,
+    "timestamp": 1769361351000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:15:51 GMT"
+  },
+  {
+    "id": "alert-1173218766/374df167-5737-4eb7-bc6a-04ad80686eb7",
+    "type": "JAM",
+    "subType": "JAM_HEAVY_TRAFFIC",
+    "reliability": 7,
+    "locationY": 28.393338,
+    "locationX": -81.490647,
+    "timestamp": 1769361180000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:13:00 GMT"
+  },
+  {
+    "id": "alert-1173240763/df5f4441-c750-403a-befc-44b64376e831",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 8,
+    "locationY": 28.647464,
+    "locationX": -81.288193,
+    "timestamp": 1769361167000,
+    "timestampUTC": "Sun, 25 Jan 2026 17:12:47 GMT"
+  },
+  {
+    "id": "alert-1173225264/ce141b79-42aa-4c6b-8493-fe2bda2f7371",
+    "type": "POLICE",
+    "subType": "POLICE_HIDING",
+    "reliability": 10,
+    "locationY": 28.67283,
+    "locationX": -81.337685,
+    "timestamp": 1769360345000,
+    "timestampUTC": "Sun, 25 Jan 2026 16:59:05 GMT"
+  },
+  {
+    "id": "alert-1173189078/35e6b048-4de6-408c-b808-d1ab25d690db",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 10,
+    "locationY": 28.451159,
+    "locationX": -81.23223,
+    "timestamp": 1769359935000,
+    "timestampUTC": "Sun, 25 Jan 2026 16:52:15 GMT"
+  },
+  {
+    "id": "alert-1173193222/8ce9e28f-270a-4163-88ac-a11d7093fb8d",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 10,
+    "locationY": 28.374997,
+    "locationX": -81.507157,
+    "timestamp": 1769359848000,
+    "timestampUTC": "Sun, 25 Jan 2026 16:50:48 GMT"
+  },
+  {
+    "id": "alert-1173184381/933882ca-5488-4950-bbcd-9c7a555891e5",
+    "type": "ACCIDENT",
+    "subType": "ACCIDENT_MINOR",
+    "reliability": 8,
+    "locationY": 28.387572,
+    "locationX": -81.49706,
+    "timestamp": 1769359735000,
+    "timestampUTC": "Sun, 25 Jan 2026 16:48:55 GMT"
+  },
+  {
+    "id": "alert-1173179181/ad6305bc-41a9-4a7a-92b3-d4efa0b9c19b",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_ROAD_EMERGENCY_VEHICLE",
+    "reliability": 6,
+    "locationY": 28.435958,
+    "locationX": -81.40905,
+    "timestamp": 1769359621000,
+    "timestampUTC": "Sun, 25 Jan 2026 16:47:01 GMT"
+  },
+  {
+    "id": "alert-1173205512/9995b334-0bd3-4d5d-bb60-2b5b8bfd42c7",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 10,
+    "locationY": 28.506675,
+    "locationX": -81.310145,
+    "timestamp": 1769359612000,
+    "timestampUTC": "Sun, 25 Jan 2026 16:46:52 GMT"
+  },
+  {
+    "id": "alert-1173200775/503fe258-b1d9-425b-a7ed-9105f2776b92",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 10,
+    "locationY": 28.690039,
+    "locationX": -81.248156,
+    "timestamp": 1769359577000,
+    "timestampUTC": "Sun, 25 Jan 2026 16:46:17 GMT"
+  },
+  {
+    "id": "alert-1173183087/6993528a-8f68-4b57-8727-dfc3818fa4a8",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 10,
+    "locationY": 28.690313,
+    "locationX": -81.213852,
+    "timestamp": 1769359397000,
+    "timestampUTC": "Sun, 25 Jan 2026 16:43:17 GMT"
+  },
+  {
+    "id": "alert-1173178211/8d4aa54e-cf30-4976-a728-7e633c23af6f",
+    "type": "POLICE",
+    "subType": "",
+    "reliability": 10,
+    "locationY": 28.51014,
+    "locationX": -81.252178,
+    "timestamp": 1769359357000,
+    "timestampUTC": "Sun, 25 Jan 2026 16:42:37 GMT"
+  },
+  {
+    "id": "alert-1173181742/1598203a-c1ea-41f7-9a69-0465bbf8bedd",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 10,
+    "locationY": 28.421009,
+    "locationX": -81.42714,
+    "timestamp": 1769358891000,
+    "timestampUTC": "Sun, 25 Jan 2026 16:34:51 GMT"
+  },
+  {
+    "id": "alert-1173185369/795526fe-99e3-4ad6-b1ca-4470dda1df1d",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 10,
+    "locationY": 28.634237,
+    "locationX": -81.48459,
+    "timestamp": 1769358610000,
+    "timestampUTC": "Sun, 25 Jan 2026 16:30:10 GMT"
+  },
+  {
+    "id": "alert-1173140528/a0c28336-6ed8-4482-8b6c-c078f913526b",
+    "type": "ACCIDENT",
+    "subType": "ACCIDENT_MINOR",
+    "reliability": 8,
+    "locationY": 28.356647,
+    "locationX": -81.495498,
+    "timestamp": 1769356551000,
+    "timestampUTC": "Sun, 25 Jan 2026 15:55:51 GMT"
+  },
+  {
+    "id": "alert-1172992849/a8ad2c59-fd09-4a69-b97e-efffb84069b9",
+    "type": "HAZARD",
+    "subType": "HAZARD_ON_SHOULDER_CAR_STOPPED",
+    "reliability": 10,
+    "locationY": 28.377807,
+    "locationX": -81.504558,
+    "timestamp": 1769349124000,
+    "timestampUTC": "Sun, 25 Jan 2026 13:52:04 GMT"
+  },
+  {
+    "id": "alert-1172515391/351e451a-1881-40e3-8041-450fcce35fa0",
+    "type": "ROAD_CLOSED",
+    "subType": "",
+    "reliability": 6,
+    "locationY": 28.538423,
+    "locationX": -81.377403,
+    "timestamp": 1769313605000,
+    "timestampUTC": "Sun, 25 Jan 2026 04:00:05 GMT"
+  },
+  {
+    "id": "alert-1172515387/7b0201b9-1d31-4f9d-908e-7dd2ef446811",
+    "type": "ROAD_CLOSED",
+    "subType": "",
+    "reliability": 6,
+    "locationY": 28.537049,
+    "locationX": -81.377406,
+    "timestamp": 1769313605000,
+    "timestampUTC": "Sun, 25 Jan 2026 04:00:05 GMT"
+  }
+]
