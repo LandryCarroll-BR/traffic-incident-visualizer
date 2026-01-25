@@ -446,6 +446,7 @@ function MapLayersControl({
   layerGroupsLabel?: string;
 }) {
   const layersContext = useMapLayersContext();
+
   if (!layersContext) {
     throw new Error("MapLayersControl must be used within MapLayers");
   }
@@ -479,61 +480,66 @@ function MapLayersControl({
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          type="button"
-          variant="secondary"
-          size="icon-sm"
-          aria-label="Select layers"
-          title="Select layers"
-          className={cn("absolute top-1 right-1 z-1000 border", className)}
-          {...props}
-        >
-          <LayersIcon />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="z-1000">
-        {showTileLayersDropdown && (
-          <>
-            <DropdownMenuLabel>{tileLayersLabel}</DropdownMenuLabel>
-            <DropdownMenuRadioGroup
-              value={selectedTileLayer}
-              onValueChange={setSelectedTileLayer}
-            >
-              {tileLayers.map((tileLayer) => (
-                <DropdownMenuRadioItem
-                  key={tileLayer.name}
-                  value={tileLayer.name}
-                >
-                  {tileLayer.name}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </>
-        )}
-        {showTileLayersDropdown && showLayerGroupsDropdown && (
-          <DropdownMenuSeparator />
-        )}
-        {showLayerGroupsDropdown && (
-          <>
-            <DropdownMenuLabel>{layerGroupsLabel}</DropdownMenuLabel>
-            {layerGroups.map((layerGroup) => (
-              <DropdownMenuCheckboxItem
-                key={layerGroup.name}
-                checked={activeLayerGroups.includes(layerGroup.name)}
-                disabled={layerGroup.disabled}
-                onCheckedChange={(checked) =>
-                  handleLayerGroupToggle(layerGroup.name, checked)
-                }
+    <MapControlContainer className="absolute top-1 right-1 z-1000">
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label="Select layers"
+            title="Select layers"
+            className={cn("absolute top-1 right-1 z-1000 border", className)}
+            {...props}
+          >
+            <LayersIcon />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="z-1000">
+          {showTileLayersDropdown && (
+            <>
+              <DropdownMenuLabel>{tileLayersLabel}</DropdownMenuLabel>
+              <DropdownMenuRadioGroup
+                value={selectedTileLayer}
+                onValueChange={setSelectedTileLayer}
               >
-                {layerGroup.name}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </>
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
+                {tileLayers.map((tileLayer) => (
+                  <DropdownMenuRadioItem
+                    key={tileLayer.name}
+                    value={tileLayer.name}
+                  >
+                    {tileLayer.name}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </>
+          )}
+          {showTileLayersDropdown && showLayerGroupsDropdown && (
+            <DropdownMenuSeparator />
+          )}
+          {showLayerGroupsDropdown && (
+            <>
+              <DropdownMenuLabel>{layerGroupsLabel}</DropdownMenuLabel>
+              {layerGroups.map((layerGroup) => (
+                <DropdownMenuCheckboxItem
+                  key={layerGroup.name}
+                  checked={activeLayerGroups.includes(layerGroup.name)}
+                  disabled={layerGroup.disabled}
+                  onSelect={(e) => {
+                    e.preventDefault();
+                  }}
+                  onCheckedChange={(checked) =>
+                    handleLayerGroupToggle(layerGroup.name, checked)
+                  }
+                >
+                  {layerGroup.name}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </MapControlContainer>
   );
 }
 
