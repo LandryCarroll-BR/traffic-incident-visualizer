@@ -4,8 +4,10 @@ import { MapLayout } from "@/components/map-layout";
 import { ApiTestRuntime } from "@/config/runtime";
 import { WazeClient } from "@/lib/waze-client";
 import { Effect } from "effect";
+import { connection } from "next/server";
 
 export async function DynamicAlertData() {
+  await connection();
   return await ApiTestRuntime.runPromise(
     getAlerts(getAlertsParams).pipe(
       Effect.provide(WazeClient.Test),
