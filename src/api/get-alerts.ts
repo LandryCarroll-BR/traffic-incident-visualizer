@@ -1,26 +1,57 @@
+import {
+  DEFAULT_ALERT_LIMIT,
+  ORLANDO_BOTTOM_LEFT_COORDINATES,
+  ORLANDO_TOP_RIGHT_COORDINATES,
+} from "@/config/constants";
 import { WazeClient } from "@/lib/waze-client";
+import { Alert } from "@/schemas/alert-schema";
 import { HttpClientResponse, UrlParams } from "@effect/platform";
-import { Effect, Schema as S } from "effect";
+import { Effect, Schema as S, Schema } from "effect";
 import { Mutable } from "effect/Types";
 
 export const getAlerts = (request: GetAlertsRequest) =>
   Effect.gen(function* () {
-    const wazeClient = yield* WazeClient;
+    const client = yield* WazeClient;
 
-    const encoded = yield* S.encode(GetAlertsEncodedSchema)(request);
+    const encoded = yield* S.encode(GetAlertsEncodedRequestSchema)(request);
     const urlParams = UrlParams.fromInput(encoded);
 
-    const response = yield* wazeClient.get("/alerts", {
+    const response = yield* client.get("/alerts", {
       urlParams,
     });
 
-    // console.log("Raw response:", response);
-    // return response;
+    const apiResponse = yield* HttpClientResponse.schemaBodyJson(
+      GetAlertsApiResponseSchema,
+    )(response);
 
-    return yield* HttpClientResponse.schemaBodyJson(GetAlertsResponseSchema)(
-      response,
-    );
+    const alerts = yield* Schema.decode(S.Array(Alert))(apiResponse);
+
+    const filteredAlerts = yield* Effect.sync(() => {
+      return alerts.filter((alert) => {
+        const alertDate = new Date(alert.timestampUTC);
+        const today = new Date();
+        return (
+          alertDate.getUTCFullYear() === today.getUTCFullYear() &&
+          alertDate.getUTCMonth() === today.getUTCMonth() &&
+          alertDate.getUTCDate() === today.getUTCDate()
+        );
+      });
+    });
+
+    return filteredAlerts;
   });
+
+export const getAlertsParams: GetAlertsRequest = {
+  bottomLeft: [
+    ORLANDO_BOTTOM_LEFT_COORDINATES.latitude,
+    ORLANDO_BOTTOM_LEFT_COORDINATES.longitude,
+  ],
+  topRight: [
+    ORLANDO_TOP_RIGHT_COORDINATES.latitude,
+    ORLANDO_TOP_RIGHT_COORDINATES.longitude,
+  ],
+  limit: DEFAULT_ALERT_LIMIT,
+};
 
 const GetAlertsRequestSchema = S.Struct({
   bottomLeft: S.Tuple(S.Number, S.Number),
@@ -28,16 +59,18 @@ const GetAlertsRequestSchema = S.Struct({
   limit: S.Number,
 });
 
-type GetAlertsRequest = Mutable<S.Schema.Type<typeof GetAlertsRequestSchema>>;
+export type GetAlertsRequest = Mutable<
+  S.Schema.Type<typeof GetAlertsRequestSchema>
+>;
 
-const GetAlertsApiSchema = S.Struct({
+const GetAlertsApiRequestSchema = S.Struct({
   "bottom-left": S.String,
   "top-right": S.String,
   limit: S.String,
 });
 
-const GetAlertsEncodedSchema = S.transform(
-  GetAlertsApiSchema,
+const GetAlertsEncodedRequestSchema = S.transform(
+  GetAlertsApiRequestSchema,
   GetAlertsRequestSchema,
   {
     decode: (api) => ({
@@ -56,7 +89,7 @@ const GetAlertsEncodedSchema = S.transform(
   },
 );
 
-const GetAlertsResponseSchema = S.Array(
+const GetAlertsApiResponseSchema = S.Array(
   S.Struct({
     id: S.String,
     type: S.String,

@@ -1,13 +1,13 @@
-import { BasicMap } from "@/components/map-example";
-import { MapLayout } from "@/components/map-layout";
+import { DynamicAlertData } from "@/app/dynamic";
 import PageLayout from "@/components/page-layout";
+import { Suspense } from "react";
 
 export default async function Home() {
   return (
     <PageLayout>
-      <MapLayout>
-        <BasicMap />
-      </MapLayout>
+      <Suspense>
+        <DynamicAlertData />
+      </Suspense>
     </PageLayout>
   );
 }
