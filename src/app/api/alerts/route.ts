@@ -1,12 +1,9 @@
-import { FileSystem, Path } from "@effect/platform";
+import { FileSystem } from "@effect/platform";
 import { NodeFileSystem } from "@effect/platform-node";
 import { Effect } from "effect";
 
 const getTestAlerts = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
-
-  const exists = yield* fs.exists("../../../../public");
-  console.log("Root path exists:", exists);
 
   const raw = yield* fs.readFileString(process.cwd() + "/public/alerts.json");
 
