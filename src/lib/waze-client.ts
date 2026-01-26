@@ -1,10 +1,5 @@
 import { env } from "@/config/env";
-import {
-  FileSystem,
-  HttpClient,
-  HttpClientRequest,
-  HttpClientResponse,
-} from "@effect/platform";
+import { HttpClient, HttpClientRequest } from "@effect/platform";
 import { Context, Effect, Layer, Schedule } from "effect";
 
 const createWazeClient = Effect.gen(function* () {
