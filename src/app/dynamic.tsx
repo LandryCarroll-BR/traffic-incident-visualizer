@@ -5,7 +5,6 @@ import { MapLayout } from "@/components/map-layout";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AppRuntime } from "@/config/runtime";
 import { WazeClient } from "@/lib/waze-client";
-import { InstrumentationService } from "@/services/instrumentation-service";
 import { Effect } from "effect";
 import { AlertCircleIcon } from "lucide-react";
 import { connection } from "next/server";
