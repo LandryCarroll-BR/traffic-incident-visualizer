@@ -10,3 +10,5 @@ export class Alert extends S.Class<Alert>("Alert")({
   timestamp: S.Number,
   timestampUTC: S.String,
 }) {}
+
+export const Alerts = S.mutable(S.Array(Alert));

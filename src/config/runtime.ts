@@ -1,5 +1,7 @@
+import { InstrumentationService } from "@/services/instrumentation-service";
 import { FetchHttpClient } from "@effect/platform";
-import { ManagedRuntime } from "effect";
+import { Layer, ManagedRuntime } from "effect";
 
-export const ApiRuntime = ManagedRuntime.make(FetchHttpClient.layer);
-export const ApiTestRuntime = ManagedRuntime.make(FetchHttpClient.layer);
+export const AppRuntime = ManagedRuntime.make(
+  Layer.merge(FetchHttpClient.layer, InstrumentationService),
+);

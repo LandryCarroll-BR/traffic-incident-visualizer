@@ -1,8 +1,9 @@
-import { getAlerts, getAlertsParams } from "@/api/get-alerts";
+import { getAlerts } from "@/api/get-alerts";
+import { getAlertsParams } from "@/api/get-alerts.interface";
 import { AlertsMap } from "@/components/alerts-map";
 import { MapLayout } from "@/components/map-layout";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { ApiTestRuntime } from "@/config/runtime";
+import { AppRuntime } from "@/config/runtime";
 import { WazeClient } from "@/lib/waze-client";
 import { Effect } from "effect";
 import { AlertCircleIcon } from "lucide-react";
@@ -10,7 +11,8 @@ import { connection } from "next/server";
 
 export async function DynamicAlertData() {
   await connection();
-  return await ApiTestRuntime.runPromise(
+
+  return await AppRuntime.runPromise(
     getAlerts(getAlertsParams).pipe(
       Effect.provide(WazeClient.Test),
       Effect.andThen((alerts) => (
@@ -18,7 +20,7 @@ export async function DynamicAlertData() {
           <AlertsMap alerts={alerts} />
         </MapLayout>
       )),
-      Effect.tapError(Effect.log),
+      Effect.tapError(Effect.logError),
       Effect.catchTags({
         ParseError: (error) =>
           Effect.succeed(

@@ -10,10 +10,17 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.211.0",
+    "@opentelemetry/sdk-metrics": "^2.5.0",
+    "@opentelemetry/sdk-trace-base": "^2.5.0",
+    "@opentelemetry/sdk-trace-node": "^2.5.0",
+    "@opentelemetry/sdk-trace-web": "^2.5.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
+    "@vercel/otel": "^2.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -32,6 +39,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
+    "@effect/opentelemetry": "^0.61.0",
     "@effect/platform": "^0.94.2",
     "@effect/platform-node": "^0.104.1",
     "@tailwindcss/postcss": "^4",
