@@ -17,20 +17,6 @@ import { connection } from "next/server";
 export async function DynamicAlertData() {
   await connection();
 
-  const alerts = await AppRuntime.runPromise(
-    getAlerts({
-      bottomLeft: [
-        ORLANDO_BOTTOM_LEFT_COORDINATES.latitude,
-        ORLANDO_BOTTOM_LEFT_COORDINATES.longitude,
-      ],
-      topRight: [
-        ORLANDO_TOP_RIGHT_COORDINATES.latitude,
-        ORLANDO_TOP_RIGHT_COORDINATES.longitude,
-      ],
-      limit: DEFAULT_ALERT_LIMIT,
-    }).pipe(Effect.provide(WazeClient.Dev)),
-  );
-
   return await AppRuntime.runPromise(
     getAlerts({
       bottomLeft: [
