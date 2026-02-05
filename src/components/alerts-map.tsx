@@ -9,16 +9,15 @@ import {
   MapTileLayer,
   MapTooltip,
 } from "@/components/ui/map";
+import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import {
   ORLANDO_BOTTOM_LEFT_COORDINATES,
   ORLANDO_COORDINATES,
   ORLANDO_TOP_RIGHT_COORDINATES,
 } from "@/config/constants";
-import { formatSnakeCaseToTitleCase } from "@/lib/utils";
-import { Alert } from "@/schemas/alert-schema";
-import { AlertType } from "@/schemas/alert-type-schema";
-import { ClusterPoint } from "@/schemas/cluster-point-schema";
+import { cn, formatSnakeCaseToTitleCase } from "@/lib/utils";
+import { Alert, AlertType } from "@/models/alert";
 import { cva } from "class-variance-authority";
 import { Schema } from "effect";
 import { LatLngBoundsExpression } from "leaflet";
@@ -30,17 +29,8 @@ import {
 } from "lucide-react";
 
 export function AlertsMap({ alerts }: { alerts: Alert[] }) {
-  const points = alerts.map((alert) =>
-    Schema.decodeSync(ClusterPoint)({
-      id: alert.id,
-      position: [alert.locationY, alert.locationX],
-      type: Schema.decodeUnknownSync(AlertType)(alert.type),
-      time: alert.timestamp,
-    }),
-  );
-
-  const layers = points
-    .map((point) => formatSnakeCaseToTitleCase(point.type))
+  const layers = alerts
+    .map((alert) => formatSnakeCaseToTitleCase(alert.type))
     .filter(
       // remove duplicates
       (type, index, self) => self.indexOf(type) === index,
@@ -70,16 +60,16 @@ export function AlertsMap({ alerts }: { alerts: Alert[] }) {
       <MapTileLayer />
       <MapLayers defaultLayerGroups={layers}>
         <MapLayersControl layerGroupsLabel="Incident Type" />
-        {points.map((point) => (
+        {alerts.map((alert) => (
           <MapLayerGroup
-            key={point.id}
-            name={formatSnakeCaseToTitleCase(point.type)}
+            key={alert.id}
+            name={formatSnakeCaseToTitleCase(alert.type)}
           >
             <MapMarker
-              position={point.position}
-              icon={<ClusterPointIcon type={point.type} />}
+              position={alert.position}
+              icon={<PointIcon type={alert.type} />}
             >
-              <ClusterPointTooltip clusterPoint={point} />
+              <AlertTooltip alert={alert} />
             </MapMarker>
           </MapLayerGroup>
         ))}
@@ -89,7 +79,7 @@ export function AlertsMap({ alerts }: { alerts: Alert[] }) {
         <div className="font-bold uppercase text-xs">Legend</div>
         {layers.map((layer, index) => (
           <div key={index} className="flex items-center gap-1">
-            <ClusterPointIcon
+            <PointIcon
               type={Schema.decodeUnknownSync(AlertType)(
                 layer.toUpperCase().replace(" ", "_"),
               )}
@@ -109,7 +99,7 @@ export function AlertsMap({ alerts }: { alerts: Alert[] }) {
   );
 }
 
-const clusterPointClasses = cva(
+const pointClasses = cva(
   "size-8 rounded-full -translate-x-1 ring-4 flex items-center justify-center border border-foreground/50",
   {
     variants: {
@@ -127,36 +117,36 @@ const clusterPointClasses = cva(
   },
 );
 
-function ClusterPointIcon({
+function PointIcon({
   type,
   className,
 }: {
-  type: ClusterPoint["type"];
+  type: Alert["type"];
   className?: string;
 }) {
   const iconMap = {
     HAZARD: (
-      <div className={clusterPointClasses({ type: "HAZARD", className })}>
+      <div className={pointClasses({ type: "HAZARD", className })}>
         <TriangleAlertIcon className="text-background" />
       </div>
     ),
     POLICE: (
-      <div className={clusterPointClasses({ type: "POLICE", className })}>
+      <div className={pointClasses({ type: "POLICE", className })}>
         <RadarIcon className="text-background" />
       </div>
     ),
     ACCIDENT: (
-      <div className={clusterPointClasses({ type: "ACCIDENT", className })}>
+      <div className={pointClasses({ type: "ACCIDENT", className })}>
         <SirenIcon className="text-background" />
       </div>
     ),
     JAM: (
-      <div className={clusterPointClasses({ type: "JAM", className })}>
+      <div className={pointClasses({ type: "JAM", className })}>
         <SirenIcon className="text-background" />
       </div>
     ),
     ROAD_CLOSED: (
-      <div className={clusterPointClasses({ type: "ROAD_CLOSED", className })}>
+      <div className={pointClasses({ type: "ROAD_CLOSED", className })}>
         <ConstructionIcon className="text-background" />
       </div>
     ),
@@ -165,30 +155,42 @@ function ClusterPointIcon({
   return iconMap[type ?? "HAZARD"];
 }
 
-function ClusterPointTooltip({ clusterPoint }: { clusterPoint: ClusterPoint }) {
+function AlertTooltip({ alert }: { alert: Alert }) {
   return (
     <MapTooltip side="bottom" sideOffset={24} className="w-fit">
       <div className="flex flex-col gap-2">
         <div className="font-bold">
-          <div>
-            Incident Type: {formatSnakeCaseToTitleCase(clusterPoint.type)}
-          </div>
+          <div>{formatSnakeCaseToTitleCase(alert.type)}</div>
         </div>
         <Separator />
         <div>
-          Coordinates: [{clusterPoint.position[0].toFixed(4)},{" "}
-          {clusterPoint.position[1].toFixed(4)}]
+          Coordinates: [{alert.position[0].toFixed(4)},{" "}
+          {alert.position[1].toFixed(4)}]
         </div>
         <div>
-          <Day time={clusterPoint.time} />,
-          <DateTime time={clusterPoint.time} />
+          Reliability: {alert.reliability ?? 0} out of 10
+          <Progress
+            className={cn(
+              alert.reliability && alert.reliability >= 7
+                ? "[&_*[data-slot=progress-indicator]]:bg-green-500"
+                : alert.reliability && alert.reliability >= 5
+                  ? "[&_*[data-slot=progress-indicator]]:bg-yellow-500"
+                  : "[&_*[data-slot=progress-indicator]]:bg-red-500",
+            )}
+            value={(alert.reliability ?? 0) * 10}
+            max={10}
+          />
+        </div>
+        <div>
+          <Day time={alert.time} />,
+          <DateTime time={alert.time} />
         </div>
       </div>
     </MapTooltip>
   );
 }
 
-function Day({ time, label }: { time: ClusterPoint["time"]; label?: string }) {
+function Day({ time, label }: { time: Alert["time"]; label?: string }) {
   const dateLabels = {
     0: "Sunday",
     1: "Monday",
@@ -207,13 +209,7 @@ function Day({ time, label }: { time: ClusterPoint["time"]; label?: string }) {
   );
 }
 
-function DateTime({
-  time,
-  label,
-}: {
-  time: ClusterPoint["time"];
-  label?: string;
-}) {
+function DateTime({ time, label }: { time: Alert["time"]; label?: string }) {
   const date = new Date(time);
   return (
     <>
