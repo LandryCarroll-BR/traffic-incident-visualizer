@@ -1,10 +1,9 @@
-import { getAlerts } from "@/api/get-alerts";
-import { getAlertsParams } from "@/api/get-alerts.interface";
+import { getSnapshotAlerts } from "@/api/get-snapshot-alerts";
 import { AlertsMap } from "@/components/alerts-map";
 import { MapLayout } from "@/components/map-layout";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AppRuntime } from "@/config/runtime";
-import { WazeClient } from "@/lib/waze-client";
+import { DatabaseService } from "@/services/database-service";
 import { Effect } from "effect";
 import { AlertCircleIcon } from "lucide-react";
 import { connection } from "next/server";
@@ -13,8 +12,10 @@ export async function DynamicAlertData() {
   await connection();
 
   return await AppRuntime.runPromise(
-    getAlerts(getAlertsParams).pipe(
-      Effect.provide(WazeClient.Test),
+    getSnapshotAlerts({
+      date: new Date("2026-02-05T02:46:31.209Z"),
+    }).pipe(
+      Effect.provide(DatabaseService.Default),
       Effect.andThen((alerts) => (
         <MapLayout>
           <AlertsMap alerts={alerts} />
@@ -33,24 +34,13 @@ export async function DynamicAlertData() {
               </AlertDescription>
             </Alert>,
           ),
-        RequestError: (error) =>
+        SnapshotNotFoundError: (error) =>
           Effect.succeed(
             <Alert variant="destructive" className="max-w-md">
               <AlertCircleIcon />
-              <AlertTitle>Request Error</AlertTitle>
+              <AlertTitle>Snapshot Not Found</AlertTitle>
               <AlertDescription>
-                There was an error making the request for alerts.
-                <pre>{JSON.stringify(error, null, 2)}</pre>
-              </AlertDescription>
-            </Alert>,
-          ),
-        ResponseError: (error) =>
-          Effect.succeed(
-            <Alert variant="destructive" className="max-w-md">
-              <AlertCircleIcon />
-              <AlertTitle>Response Error</AlertTitle>
-              <AlertDescription>
-                There was an error with the response for alerts.
+                No snapshot was found for the specified date.
                 <pre>{JSON.stringify(error, null, 2)}</pre>
               </AlertDescription>
             </Alert>,
