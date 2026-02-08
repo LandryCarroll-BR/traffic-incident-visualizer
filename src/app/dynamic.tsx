@@ -16,7 +16,6 @@ export async function DynamicAlertData() {
       date: new Date("2026-02-05T02:46:31.209Z"),
     }).pipe(
       Effect.provide(DatabaseService.Default),
-      Effect.tap((res) => console.log("Fetching snapshot alerts...", res)),
       Effect.andThen((alerts) => (
         <MapLayout>
           <AlertsMap alerts={alerts} />

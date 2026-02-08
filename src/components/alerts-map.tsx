@@ -108,7 +108,7 @@ const pointClasses = cva(
         POLICE: "bg-blue-500  ring-blue-500/30",
         ACCIDENT: "bg-red-500 ring-red-500/30",
         JAM: "bg-orange-500 ring-orange-500/30",
-        ROAD_CLOSED: "bg-gray-700 ring-gray-700/30",
+        ROAD_CLOSED: "bg-neutral-400 ring-neutral-500/30",
       },
     },
     defaultVariants: {
@@ -174,7 +174,7 @@ function AlertTooltip({ alert }: { alert: Alert }) {
               alert.reliability && alert.reliability >= 7
                 ? "[&_*[data-slot=progress-indicator]]:bg-green-500"
                 : alert.reliability && alert.reliability >= 5
-                  ? "[&_*[data-slot=progress-indicator]]:bg-yellow-500"
+                  ? "[&_*[data-slot=progress-indicator]]:bg-primary"
                   : "[&_*[data-slot=progress-indicator]]:bg-red-500",
             )}
             value={(alert.reliability ?? 0) * 10}
