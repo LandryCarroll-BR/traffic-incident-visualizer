@@ -3,7 +3,7 @@ import Alerts from "./alerts.json";
 import { injectInboundContext } from "@/lib/inject-inbound-context";
 import { InstrumentationService } from "@/services/instrumentation-service";
 import { AppRuntime } from "@/config/runtime";
-import { saveSnapshot } from "@/api/save-snapshot";
+// import { saveSnapshot } from "@/api/save-snapshot";
 
 const getTestAlerts = Effect.succeed(Alerts).pipe(
   Effect.tap(() => Effect.annotateCurrentSpan("data-set", "test alerts")),
@@ -14,7 +14,6 @@ const getTestAlerts = Effect.succeed(Alerts).pipe(
 export const GET = injectInboundContext(() =>
   AppRuntime.runPromise(
     getTestAlerts.pipe(
-      Effect.provide(InstrumentationService),
       Effect.map(
         (res) =>
           new Response(JSON.stringify(res), {

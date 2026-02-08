@@ -1,15 +1,9 @@
-import { getAlerts } from "@/api/get-alerts";
+import { getSnapshotAlerts } from "@/api/get-snapshot-alerts";
 import { AlertsMap } from "@/components/alerts-map";
 import { MapLayout } from "@/components/map-layout";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  DEFAULT_ALERT_LIMIT,
-  ORLANDO_BOTTOM_LEFT_COORDINATES,
-  ORLANDO_TOP_RIGHT_COORDINATES,
-} from "@/config/constants";
 import { AppRuntime } from "@/config/runtime";
-import prisma from "@/lib/prisma";
-import { WazeClient } from "@/lib/waze";
+import { DatabaseService } from "@/services/database-service";
 import { Effect } from "effect";
 import { AlertCircleIcon } from "lucide-react";
 import { connection } from "next/server";
@@ -18,18 +12,11 @@ export async function DynamicAlertData() {
   await connection();
 
   return await AppRuntime.runPromise(
-    getAlerts({
-      bottomLeft: [
-        ORLANDO_BOTTOM_LEFT_COORDINATES.latitude,
-        ORLANDO_BOTTOM_LEFT_COORDINATES.longitude,
-      ],
-      topRight: [
-        ORLANDO_TOP_RIGHT_COORDINATES.latitude,
-        ORLANDO_TOP_RIGHT_COORDINATES.longitude,
-      ],
-      limit: DEFAULT_ALERT_LIMIT,
+    getSnapshotAlerts({
+      date: new Date("2026-02-05T02:46:31.209Z"),
     }).pipe(
-      Effect.provide(WazeClient.Dev),
+      Effect.provide(DatabaseService.Default),
+      Effect.tap((res) => console.log("Fetching snapshot alerts...", res)),
       Effect.andThen((alerts) => (
         <MapLayout>
           <AlertsMap alerts={alerts} />
@@ -48,24 +35,13 @@ export async function DynamicAlertData() {
               </AlertDescription>
             </Alert>,
           ),
-        RequestError: (error) =>
+        SnapshotNotFoundError: (error) =>
           Effect.succeed(
             <Alert variant="destructive" className="max-w-md">
               <AlertCircleIcon />
-              <AlertTitle>Request Error</AlertTitle>
+              <AlertTitle>Snapshot Not Found</AlertTitle>
               <AlertDescription>
-                There was an error making the request for alerts.
-                <pre>{JSON.stringify(error, null, 2)}</pre>
-              </AlertDescription>
-            </Alert>,
-          ),
-        ResponseError: (error) =>
-          Effect.succeed(
-            <Alert variant="destructive" className="max-w-md">
-              <AlertCircleIcon />
-              <AlertTitle>Response Error</AlertTitle>
-              <AlertDescription>
-                There was an error with the response for alerts.
+                No snapshot was found for the specified date.
                 <pre>{JSON.stringify(error, null, 2)}</pre>
               </AlertDescription>
             </Alert>,
