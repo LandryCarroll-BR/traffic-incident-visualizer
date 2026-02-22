@@ -1,51 +1,62 @@
-import { getSnapshotAlerts } from "@/api/get-snapshot-alerts";
-import { AlertsMap } from "@/components/alerts-map";
-import { MapLayout } from "@/components/map-layout";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AppRuntime } from "@/config/runtime";
-import { DatabaseService } from "@/services/database-service";
 import { Effect } from "effect";
 import { AlertCircleIcon } from "lucide-react";
 import { connection } from "next/server";
+import { getSnapshotAnalyticsByDate } from "@/api/get-snapshot-analytics-by-date";
+import { getSnapshotTimeline } from "@/api/get-snapshot-timeline";
+import { MapLayout } from "@/components/map-layout";
+import { SnapshotDashboard } from "@/components/snapshot-dashboard";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AppRuntime } from "@/config/runtime";
+import { DatabaseService } from "@/services/database-service";
 
 export async function DynamicAlertData() {
   await connection();
 
   return await AppRuntime.runPromise(
-    getSnapshotAlerts({
-      date: new Date("2026-02-05T02:46:31.209Z"),
+    Effect.gen(function* () {
+      const timeline = yield* getSnapshotTimeline({ days: 30 });
+      const latestDate = timeline.dates.at(-1);
+
+      if (!latestDate) {
+        return (
+          <MapLayout>
+            <SnapshotDashboard
+              initialTimeline={toPlainValue(timeline)}
+              initialAnalytics={null}
+            />
+          </MapLayout>
+        );
+      }
+
+      const analytics = yield* getSnapshotAnalyticsByDate({ date: latestDate });
+
+      return (
+        <MapLayout>
+          <SnapshotDashboard
+            initialTimeline={toPlainValue(timeline)}
+            initialAnalytics={toPlainValue(analytics)}
+          />
+        </MapLayout>
+      );
     }).pipe(
       Effect.provide(DatabaseService.Default),
-      Effect.andThen((alerts) => (
-        <MapLayout>
-          <AlertsMap alerts={alerts} />
-        </MapLayout>
-      )),
       Effect.tapError(Effect.logError),
-      Effect.catchTags({
-        ParseError: (error) =>
-          Effect.succeed(
-            <Alert variant="destructive" className="max-w-md">
-              <AlertCircleIcon />
-              <AlertTitle>Parse Eerror</AlertTitle>
-              <AlertDescription>
-                There was an error parsing the alert data.
-                <pre>{JSON.stringify(error, null, 2)}</pre>
-              </AlertDescription>
-            </Alert>,
-          ),
-        SnapshotNotFoundError: (error) =>
-          Effect.succeed(
-            <Alert variant="destructive" className="max-w-md">
-              <AlertCircleIcon />
-              <AlertTitle>Snapshot Not Found</AlertTitle>
-              <AlertDescription>
-                No snapshot was found for the specified date.
-                <pre>{JSON.stringify(error, null, 2)}</pre>
-              </AlertDescription>
-            </Alert>,
-          ),
-      }),
+      Effect.catchAll((error) =>
+        Effect.succeed(
+          <Alert variant="destructive" className="max-w-lg">
+            <AlertCircleIcon />
+            <AlertTitle>Dashboard Load Error</AlertTitle>
+            <AlertDescription>
+              Failed to load snapshot dashboard data.
+              <pre>{JSON.stringify(error, null, 2)}</pre>
+            </AlertDescription>
+          </Alert>,
+        ),
+      ),
     ),
   );
+}
+
+function toPlainValue<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
 }

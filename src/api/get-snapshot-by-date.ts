@@ -1,16 +1,12 @@
+import { Data, Effect } from "effect";
+import { addUtcDays, startOfUtcDay } from "@/lib/date";
 import { DatabaseService } from "@/services/database-service";
-import { Effect, Data } from "effect";
 
 export const getSnapshotByDate = (date: Date) =>
   DatabaseService.pipe(
     Effect.andThen((db) => {
-      const dateOnly = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-      );
-      const nextDay = new Date(dateOnly);
-      nextDay.setDate(nextDay.getDate() + 1);
+      const dateOnly = startOfUtcDay(date);
+      const nextDay = addUtcDays(dateOnly, 1);
 
       return Effect.tryPromise({
         try: () =>
