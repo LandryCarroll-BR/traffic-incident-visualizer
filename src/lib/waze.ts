@@ -1,5 +1,6 @@
 import { env } from "@/config/env";
 import {
+  FetchHttpClient,
   HttpApi,
   HttpApiClient,
   HttpApiEndpoint,
@@ -53,6 +54,7 @@ export class WazeClient extends Effect.Service<WazeClient>()("WazeClient", {
 
     return { client };
   }),
+  dependencies: [FetchHttpClient.layer],
 }) {
   static Dev = Layer.effect(
     WazeClient,
