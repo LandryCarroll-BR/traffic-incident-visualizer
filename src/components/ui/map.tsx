@@ -664,12 +664,7 @@ function MapRectangle({
   className,
   ...props
 }: RectangleProps & { ref?: Ref<Rectangle> }) {
-  return (
-    <LeafletRectangle
-      className={cn("fill-foreground stroke-foreground stroke-2", className)}
-      {...props}
-    />
-  );
+  return <LeafletRectangle className={cn("stroke-2", className)} {...props} />;
 }
 
 function MapPopup({

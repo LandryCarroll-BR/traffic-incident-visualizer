@@ -1,5 +1,14 @@
+import { cva } from "class-variance-authority";
+import { Schema } from "effect";
+import type { LatLngBoundsExpression } from "leaflet";
 import {
-  Map,
+  ConstructionIcon,
+  RadarIcon,
+  SirenIcon,
+  TriangleAlertIcon,
+} from "lucide-react";
+import {
+  Map as IncidentMap,
   MapControlContainer,
   MapLayerGroup,
   MapLayers,
@@ -17,18 +26,28 @@ import {
   ORLANDO_TOP_RIGHT_COORDINATES,
 } from "@/config/constants";
 import { cn, formatSnakeCaseToTitleCase } from "@/lib/utils";
-import { Alert, AlertType } from "@/models/alert";
-import { cva } from "class-variance-authority";
-import { Schema } from "effect";
-import { LatLngBoundsExpression } from "leaflet";
-import {
-  ConstructionIcon,
-  RadarIcon,
-  SirenIcon,
-  TriangleAlertIcon,
-} from "lucide-react";
+import { type Alert, AlertType } from "@/models/alert";
+import type { RiskSurfaceCell } from "@/models/snapshot-analytics";
 
-export function AlertsMap({ alerts }: { alerts: Alert[] }) {
+export type AlertsMapMode = "points" | "risk-heat" | "accident-heat";
+
+type AlertsMapProps = {
+  alerts: Alert[];
+  mode: AlertsMapMode;
+  riskSurface: RiskSurfaceCell[];
+  selectedRiskCellId?: string | null;
+  onRiskCellSelect?: (cellId: string) => void;
+};
+
+const HEAT_CELL_LIMIT = 400;
+
+export function AlertsMap({
+  alerts,
+  mode,
+  riskSurface,
+  selectedRiskCellId,
+  onRiskCellSelect,
+}: AlertsMapProps) {
   const layers = alerts
     .map((alert) => formatSnakeCaseToTitleCase(alert.type))
     .filter(
@@ -49,8 +68,23 @@ export function AlertsMap({ alerts }: { alerts: Alert[] }) {
     ],
   ] satisfies LatLngBoundsExpression;
 
+  const isPointMode = mode === "points";
+  const visibleRiskCells = riskSurface.slice(0, HEAT_CELL_LIMIT);
+  const hasSelectedHeatCell = !isPointMode && selectedRiskCellId !== null;
+  const selectedHeatCell = hasSelectedHeatCell
+    ? visibleRiskCells.find((cell) => cell.cellId === selectedRiskCellId)
+    : undefined;
+  const maxRiskScore = Math.max(
+    1,
+    ...visibleRiskCells.map((cell) => cell.riskScore),
+  );
+  const maxAccidentCount = Math.max(
+    1,
+    ...visibleRiskCells.map((cell) => cell.accidentCount30d),
+  );
+
   return (
-    <Map
+    <IncidentMap
       center={ORLANDO_COORDINATES}
       zoom={11}
       className="border"
@@ -58,44 +92,131 @@ export function AlertsMap({ alerts }: { alerts: Alert[] }) {
       maxBounds={BOUNDS}
     >
       <MapTileLayer />
-      <MapLayers defaultLayerGroups={layers}>
-        <MapLayersControl layerGroupsLabel="Incident Type" />
-        {alerts.map((alert) => (
-          <MapLayerGroup
-            key={alert.id}
-            name={formatSnakeCaseToTitleCase(alert.type)}
-          >
-            <MapMarker
-              position={alert.position}
-              icon={<PointIcon type={alert.type} />}
-            >
-              <AlertTooltip alert={alert} />
-            </MapMarker>
-          </MapLayerGroup>
-        ))}
-      </MapLayers>
 
-      <MapControlContainer className="bg-popover text-popover-foreground bottom-1 right-1 flex flex-col gap-4 rounded-md border p-5 shadow">
-        <div className="font-bold uppercase text-xs">Legend</div>
-        {layers.map((layer, index) => (
-          <div key={index} className="flex items-center gap-1">
-            <PointIcon
-              type={Schema.decodeUnknownSync(AlertType)(
-                layer.toUpperCase().replace(" ", "_"),
+      {isPointMode ? (
+        <MapLayers defaultLayerGroups={layers}>
+          <MapLayersControl layerGroupsLabel="Incident Type" />
+          {alerts.map((alert) => (
+            <MapLayerGroup
+              key={alert.id}
+              name={formatSnakeCaseToTitleCase(alert.type)}
+            >
+              <MapMarker
+                position={alert.position}
+                icon={<PointIcon type={alert.type} />}
+              >
+                <AlertTooltip alert={alert} />
+              </MapMarker>
+            </MapLayerGroup>
+          ))}
+        </MapLayers>
+      ) : (
+        visibleRiskCells.map((cell) => {
+          const value =
+            mode === "risk-heat" ? cell.riskScore : cell.accidentCount30d;
+          const maxValue =
+            mode === "risk-heat" ? maxRiskScore : maxAccidentCount;
+          const isSelected = selectedRiskCellId === cell.cellId;
+          const color = getHeatColor(value, maxValue);
+
+          return (
+            <MapRectangle
+              key={cell.cellId}
+              bounds={[
+                [cell.bounds.south, cell.bounds.west],
+                [cell.bounds.north, cell.bounds.east],
+              ]}
+              pathOptions={{
+                color: isSelected ? "hsl(var(--foreground))" : color,
+                fillColor: color,
+                weight: isSelected ? 2.5 : hasSelectedHeatCell ? 0.5 : 1,
+                opacity: isSelected ? 1 : hasSelectedHeatCell ? 0.75 : 0.75,
+                fillOpacity: isSelected
+                  ? 0.9
+                  : hasSelectedHeatCell
+                    ? 0.22
+                    : 0.6,
+              }}
+              className={cn(
+                "hover:cursor-pointer transition-all",
+                hasSelectedHeatCell && !isSelected && "saturate-[0.9]",
               )}
-              className="scale-75"
-            />
-            <div className="text-base">{layer}</div>
-          </div>
-        ))}
+              eventHandlers={{
+                click: () => {
+                  onRiskCellSelect?.(cell.cellId);
+                },
+              }}
+            >
+              <RiskCellTooltip cell={cell} mode={mode} />
+            </MapRectangle>
+          );
+        })
+      )}
+
+      {selectedHeatCell ? (
+        <MapRectangle
+          key={`${selectedHeatCell.cellId}-focus-ring`}
+          bounds={[
+            [selectedHeatCell.bounds.south, selectedHeatCell.bounds.west],
+            [selectedHeatCell.bounds.north, selectedHeatCell.bounds.east],
+          ]}
+          stroke={true}
+          weight={10}
+          pathOptions={{
+            weight: 10,
+            color: "#ffffff",
+            opacity: 100,
+          }}
+          className="pointer-events-none outline-2 rounded-sm outline-white animate-pulse"
+        />
+      ) : null}
+
+      <MapControlContainer className="bg-popover text-popover-foreground bottom-1 left-1 flex max-w-60 flex-col gap-3 rounded-md border p-4 shadow">
+        {isPointMode ? (
+          <>
+            <div className="font-bold uppercase text-xs">Legend</div>
+            {layers.map((layer) => (
+              <div key={layer} className="flex items-center gap-1">
+                <PointIcon
+                  type={Schema.decodeUnknownSync(AlertType)(
+                    layer.toUpperCase().replace(" ", "_"),
+                  )}
+                  className="scale-75"
+                />
+                <div className="text-base">{layer}</div>
+              </div>
+            ))}
+          </>
+        ) : (
+          <>
+            <div className="font-bold uppercase text-xs">Risk Heat</div>
+            <div className="text-muted-foreground text-xs">
+              {mode === "risk-heat"
+                ? "Composite risk score"
+                : "Accident density"}
+            </div>
+            <div className="space-y-1">
+              <HeatLegendRow color="#16a34a" label="Low" />
+              <HeatLegendRow color="#f59e0b" label="Medium" />
+              <HeatLegendRow color="#dc2626" label="High" />
+            </div>
+            <div className="text-muted-foreground text-[11px]">
+              Showing top {visibleRiskCells.length} cells by risk score.
+            </div>
+          </>
+        )}
       </MapControlContainer>
 
       <MapRectangle
-        fillOpacity={0.075}
+        pathOptions={{
+          color: "transparent",
+          fillColor: "hsl(var(--foreground))",
+          fillOpacity: 0.06,
+        }}
         className="hover:cursor-grab! stroke-none"
         bounds={BOUNDS}
       />
-    </Map>
+    </IncidentMap>
   );
 }
 
@@ -105,7 +226,7 @@ const pointClasses = cva(
     variants: {
       type: {
         HAZARD: "bg-primary ring-primary/30",
-        POLICE: "bg-blue-500  ring-blue-500/30",
+        POLICE: "bg-blue-500 ring-blue-500/30",
         ACCIDENT: "bg-red-500 ring-red-500/30",
         JAM: "bg-orange-500 ring-orange-500/30",
         ROAD_CLOSED: "bg-neutral-400 ring-neutral-500/30",
@@ -182,12 +303,91 @@ function AlertTooltip({ alert }: { alert: Alert }) {
           />
         </div>
         <div>
-          <Day time={alert.time} />,
-          <DateTime time={alert.time} />
+          <Day time={alert.time} />, <DateTime time={alert.time} />
         </div>
       </div>
     </MapTooltip>
   );
+}
+
+function RiskCellTooltip({
+  cell,
+  mode,
+}: {
+  cell: RiskSurfaceCell;
+  mode: AlertsMapMode;
+}) {
+  return (
+    <MapTooltip side="bottom" sideOffset={22} className="w-64">
+      <div className="space-y-2">
+        <div className="font-semibold">Cell {cell.cellId}</div>
+        <Separator />
+        <div className="text-xs">
+          Center: {cell.cellLat.toFixed(4)}, {cell.cellLng.toFixed(4)}
+        </div>
+        <div className="text-xs">
+          {mode === "risk-heat" ? "Risk Score" : "Accidents (30d)"}:{" "}
+          {mode === "risk-heat"
+            ? cell.riskScore.toFixed(2)
+            : cell.accidentCount30d}
+        </div>
+        <div className="text-xs">
+          30d incidents: {cell.totalIncidents30d} ({cell.severeCount30d} severe)
+        </div>
+        <div className="text-xs">
+          Recurrence: {cell.recurrenceDays30d} days | Trend:{" "}
+          {formatTrend(cell.trend7dPct)}
+        </div>
+      </div>
+    </MapTooltip>
+  );
+}
+
+function HeatLegendRow({ color, label }: { color: string; label: string }) {
+  return (
+    <div className="flex items-center gap-2 text-xs">
+      <div
+        className="h-2.5 w-6 rounded-sm border"
+        style={{ backgroundColor: color }}
+      />
+      <span>{label}</span>
+    </div>
+  );
+}
+
+function getHeatColor(value: number, maxValue: number): string {
+  const ratio = clamp(value / Math.max(maxValue, 1), 0, 1);
+
+  if (ratio >= 0.8) {
+    return "#dc2626";
+  }
+
+  if (ratio >= 0.6) {
+    return "#f97316";
+  }
+
+  if (ratio >= 0.4) {
+    return "#f59e0b";
+  }
+
+  if (ratio >= 0.2) {
+    return "#84cc16";
+  }
+
+  return "#16a34a";
+}
+
+function formatTrend(value: number | null): string {
+  if (value === null) {
+    return "N/A";
+  }
+
+  const prefix = value > 0 ? "+" : "";
+  return `${prefix}${value.toFixed(1)}%`;
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
 }
 
 function Day({ time, label }: { time: Alert["time"]; label?: string }) {

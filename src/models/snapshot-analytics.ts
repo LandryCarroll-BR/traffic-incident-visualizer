@@ -26,6 +26,79 @@ export type TimelineResponse = {
   points: TimelinePoint[];
 };
 
+export type RiskDailyPoint = {
+  date: string;
+  totalIncidents: number;
+  severeIncidents: number;
+  accidentIncidents: number;
+};
+
+export type RiskBounds = {
+  south: number;
+  west: number;
+  north: number;
+  east: number;
+};
+
+export type RiskSurfaceCell = {
+  cellId: string;
+  cellLat: number;
+  cellLng: number;
+  bounds: RiskBounds;
+  grid: {
+    row: number;
+    col: number;
+    size: number;
+  };
+  totalIncidents30d: number;
+  accidentCount30d: number;
+  severeCount30d: number;
+  recurrenceDays30d: number;
+  incidents7d: number;
+  incidentsPrev7d: number;
+  trend7dPct: number | null;
+  weightedScore: number;
+  confidence: number;
+  riskScore: number;
+  byType30d: DailyCounts;
+  daily: RiskDailyPoint[];
+};
+
+export type TopRiskArea = {
+  areaId: string;
+  label: string;
+  primaryCellId: string;
+  centroidLat: number;
+  centroidLng: number;
+  bounds: RiskBounds;
+  cellIds: string[];
+  cellCount: number;
+  totalIncidents30d: number;
+  accidentCount30d: number;
+  severeCount30d: number;
+  severeMixPct: number;
+  recurrenceDays30d: number;
+  incidents7d: number;
+  incidentsPrev7d: number;
+  trend7dPct: number | null;
+  confidence: number;
+  riskScore: number;
+  byType30d: DailyCounts;
+  daily: RiskDailyPoint[];
+};
+
+export type EmergingHotspot = {
+  cellId: string;
+  cellLat: number;
+  cellLng: number;
+  incidents7d: number;
+  incidentsPrev7d: number;
+  trend7dPct: number | null;
+  confidence: number;
+  significance: "MEDIUM" | "HIGH";
+  significanceScore: number;
+};
+
 export type SnapshotAnalyticsResponse = {
   date: string;
   alerts: Alert[];
@@ -49,4 +122,8 @@ export type SnapshotAnalyticsResponse = {
     cellLng: number;
     count: number;
   }>;
+  riskMethodVersion: string;
+  riskSurface: RiskSurfaceCell[];
+  topRiskAreas: TopRiskArea[];
+  emergingHotspots: EmergingHotspot[];
 };

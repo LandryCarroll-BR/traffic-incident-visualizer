@@ -1,5 +1,9 @@
 import { Data, Effect } from "effect";
 import {
+  buildRiskIntelligence,
+  RISK_METHOD_VERSION,
+} from "@/api/risk-intelligence";
+import {
   aggregateMetricsFromAlerts,
   averageMetrics,
   calculateByTypeDeltaPct,
@@ -65,6 +69,10 @@ export const getSnapshotAnalyticsByDate = Effect.fn(
         },
       },
       hotspots: [],
+      riskMethodVersion: RISK_METHOD_VERSION,
+      riskSurface: [],
+      topRiskAreas: [],
+      emergingHotspots: [],
     };
   }
 
@@ -126,6 +134,59 @@ export const getSnapshotAnalyticsByDate = Effect.fn(
       aggregateMetricsFromAlerts(alerts),
     ),
   );
+  const riskWindowStart = addUtcDays(selectedDate, -29);
+
+  const candidateRiskSnapshots = yield* Effect.tryPromise({
+    try: () =>
+      db.snapshot.findMany({
+        where: {
+          createdAt: {
+            gte: riskWindowStart,
+            lt: nextDay,
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 240,
+        include: {
+          snapshotTrafficAlerts: true,
+        },
+      }),
+    catch: (cause) => new SnapshotAnalyticsError({ cause }),
+  });
+
+  const riskByDay = new Map<
+    string,
+    {
+      alerts: Alert[];
+    }
+  >();
+
+  for (const snapshot of candidateRiskSnapshots) {
+    const dayKey = toUtcDayKey(snapshot.createdAt);
+    if (riskByDay.has(dayKey)) {
+      continue;
+    }
+
+    const alerts = snapshot.snapshotTrafficAlerts
+      .map(mapTrafficAlertToAlert)
+      .filter((alert): alert is Alert => alert !== null);
+
+    riskByDay.set(dayKey, { alerts });
+
+    if (riskByDay.size >= 30) {
+      break;
+    }
+  }
+
+  const riskIntelligence = buildRiskIntelligence({
+    selectedDate: date,
+    history: Array.from(riskByDay.entries()).map(([day, value]) => ({
+      date: day,
+      alerts: value.alerts,
+    })),
+  });
 
   return {
     date,
@@ -151,6 +212,10 @@ export const getSnapshotAnalyticsByDate = Effect.fn(
       },
     },
     hotspots: calculateHotspots(selectedAlerts),
+    riskMethodVersion: RISK_METHOD_VERSION,
+    riskSurface: riskIntelligence.riskSurface,
+    topRiskAreas: riskIntelligence.topRiskAreas,
+    emergingHotspots: riskIntelligence.emergingHotspots,
   } satisfies SnapshotAnalyticsResponse;
 });
 
