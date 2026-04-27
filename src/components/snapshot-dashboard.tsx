@@ -308,6 +308,9 @@ function RiskInsightsOverlay({
           <FlameIcon className="text-destructive size-4" />
           Risk Corridors
         </div>
+        <div className="text-muted-foreground text-xs">
+          Top 3 corridors by risk score
+        </div>
       </div>
 
       <div className="space-y-2">

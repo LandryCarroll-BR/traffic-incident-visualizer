@@ -17,6 +17,7 @@ import {
 
 export const RISK_METHOD_VERSION = "risk-v1";
 export const RISK_GRID_SIZE = 0.01;
+export const TOP_RISK_AREA_LIMIT = 3;
 
 const TYPE_WEIGHTS: Record<keyof DailyCounts, number> = {
   ACCIDENT: 5,
@@ -299,7 +300,7 @@ function calculateTopRiskAreas(
   return clusters
     .map((cluster) => aggregateCluster(cluster, windowDates))
     .sort((a, b) => b.riskScore - a.riskScore)
-    .slice(0, 10)
+    .slice(0, TOP_RISK_AREA_LIMIT)
     .map((area, index) => ({
       ...area,
       areaId: `area-${index + 1}`,

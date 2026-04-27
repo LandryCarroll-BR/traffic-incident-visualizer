@@ -3,10 +3,14 @@ import { Schema } from "effect";
 import type { LatLngBoundsExpression } from "leaflet";
 import {
   ConstructionIcon,
+  MapPinIcon,
   RadarIcon,
   SirenIcon,
   TriangleAlertIcon,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useMap } from "react-leaflet";
+import type { PlaceFeature } from "@/components/ui/place-autocomplete";
 import {
   Map as IncidentMap,
   MapControlContainer,
@@ -15,6 +19,7 @@ import {
   MapLayersControl,
   MapMarker,
   MapRectangle,
+  MapSearchControl,
   MapTileLayer,
   MapTooltip,
 } from "@/components/ui/map";
@@ -72,9 +77,16 @@ export function AlertsMap({
       ORLANDO_TOP_RIGHT_COORDINATES.longitude + BOUNDS_OFFSET,
     ],
   ] satisfies LatLngBoundsExpression;
+  const searchBounds = [
+    ORLANDO_BOTTOM_LEFT_COORDINATES.longitude,
+    ORLANDO_BOTTOM_LEFT_COORDINATES.latitude,
+    ORLANDO_TOP_RIGHT_COORDINATES.longitude,
+    ORLANDO_TOP_RIGHT_COORDINATES.latitude,
+  ] as [number, number, number, number];
 
   const isPointMode = mode === "points";
   const visibleRiskCells = riskSurface.slice(0, HEAT_CELL_LIMIT);
+  const [selectedPlace, setSelectedPlace] = useState<PlaceFeature | null>(null);
   const selectedRiskCellIdSet = new Set(selectedRiskCellIds);
   const hasSelectedHeatCell =
     !isPointMode &&
@@ -100,6 +112,17 @@ export function AlertsMap({
       maxBounds={BOUNDS}
     >
       <MapTileLayer />
+      <MapSearchControl
+        className="top-14 left-3 z-1001 w-72"
+        placeholder="Search"
+        bbox={searchBounds}
+        lat={ORLANDO_COORDINATES[0]}
+        lon={ORLANDO_COORDINATES[1]}
+        zoom={11}
+        locationBiasScale={0.6}
+        onPlaceSelect={setSelectedPlace}
+      />
+      <MapSearchResultOverlay feature={selectedPlace} />
 
       {isPointMode ? (
         <MapLayers defaultLayerGroups={layers}>
@@ -157,9 +180,9 @@ export function AlertsMap({
                   ? 0.9
                   : isInSelectedCorridor
                     ? 0.72
-                  : hasSelectedHeatCell
-                    ? 0.22
-                    : 0.6,
+                    : hasSelectedHeatCell
+                      ? 0.22
+                      : 0.6,
               }}
               className={cn(
                 "hover:cursor-pointer transition-all",
@@ -352,7 +375,8 @@ function RiskCellTooltip({
         <div className="text-xs">
           {mode === "risk-heat"
             ? "Risk Score"
-            : `Accidents (${RISK_HISTORY_DAYS}d)`}:{" "}
+            : `Accidents (${RISK_HISTORY_DAYS}d)`}
+          :{" "}
           {mode === "risk-heat"
             ? cell.riskScore.toFixed(2)
             : cell.accidentCountWindow}
@@ -368,6 +392,83 @@ function RiskCellTooltip({
       </div>
     </MapTooltip>
   );
+}
+
+function MapSearchResultOverlay({ feature }: { feature: PlaceFeature | null }) {
+  const map = useMap();
+  const position = feature
+    ? ([feature.geometry.coordinates[1], feature.geometry.coordinates[0]] as [
+        number,
+        number,
+      ])
+    : null;
+
+  useEffect(() => {
+    if (!feature || !position) {
+      return;
+    }
+
+    const extent = feature.properties.extent;
+    if (extent) {
+      map.fitBounds(
+        [
+          [extent[1], extent[0]],
+          [extent[3], extent[2]],
+        ],
+        {
+          padding: [32, 32],
+          maxZoom: 15,
+        },
+      );
+      return;
+    }
+
+    map.flyTo(position, Math.max(map.getZoom(), 14));
+  }, [feature, map, position]);
+
+  if (!feature || !position) {
+    return null;
+  }
+
+  return (
+    <MapMarker position={position} icon={<SearchResultIcon />}>
+      <MapTooltip side="bottom" sideOffset={22}>
+        <div className="space-y-1">
+          <div className="font-semibold">{getPlaceTitle(feature)}</div>
+          <div className="text-xs text-muted-foreground">
+            {getPlaceSubtitle(feature)}
+          </div>
+        </div>
+      </MapTooltip>
+    </MapMarker>
+  );
+}
+
+function SearchResultIcon() {
+  return (
+    <div className="flex size-8 -translate-x-1 items-center justify-center rounded-full border border-foreground/40 bg-background shadow-sm ring-4 ring-primary/20">
+      <MapPinIcon className="size-4 text-primary" />
+    </div>
+  );
+}
+
+function getPlaceTitle(feature: PlaceFeature): string {
+  return (
+    feature.properties.name ??
+    feature.properties.street ??
+    feature.properties.locality ??
+    "Search result"
+  );
+}
+
+function getPlaceSubtitle(feature: PlaceFeature): string {
+  const parts = [
+    feature.properties.street,
+    feature.properties.city ?? feature.properties.locality,
+    feature.properties.state,
+  ].filter(Boolean);
+
+  return parts.join(", ");
 }
 
 function HeatLegendRow({ color, label }: { color: string; label: string }) {
