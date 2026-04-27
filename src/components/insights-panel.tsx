@@ -16,6 +16,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { AlertTypeIcon } from "@/components/alert-type-icon";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -42,7 +43,9 @@ import { formatUtcDayLabel } from "@/lib/date";
 import { formatSnakeCaseToTitleCase } from "@/lib/utils";
 import {
   ALERT_TYPE_KEYS,
+  RISK_HISTORY_DAYS,
   type DailyCounts,
+  type RiskSurfaceCell,
   type SnapshotAnalyticsResponse,
   type TimelineResponse,
 } from "@/models/snapshot-analytics";
@@ -87,6 +90,9 @@ export function InsightsPanel({
   const hasAnalytics = analytics !== null;
   const topType = hasAnalytics ? getTopType(analytics.metrics.byType) : null;
   const topHotspot = hasAnalytics ? analytics.hotspots.at(0) : undefined;
+  const riskWindowTotals = hasAnalytics
+    ? aggregateRiskWindowTotals(analytics.riskSurface)
+    : createEmptyCounts();
 
   return (
     <Collapsible open={isOpen} onOpenChange={onOpenChange}>
@@ -175,6 +181,28 @@ export function InsightsPanel({
                     }
                     loading={loading && !hasAnalytics}
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="text-sm font-medium">
+                      Trailing {RISK_HISTORY_DAYS}-day totals
+                    </div>
+                    <div className="text-muted-foreground text-xs">
+                      Collected through {selectedDateLabel}
+                    </div>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                    {ALERT_TYPE_KEYS.map((alertType) => (
+                      <WindowTotalCard
+                        key={alertType}
+                        alertType={alertType}
+                        label={formatSnakeCaseToTitleCase(alertType)}
+                        value={riskWindowTotals[alertType]}
+                        loading={loading && !hasAnalytics}
+                      />
+                    ))}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -277,6 +305,37 @@ export function InsightsPanel({
   );
 }
 
+function WindowTotalCard({
+  alertType,
+  label,
+  value,
+  loading,
+}: {
+  alertType: (typeof ALERT_TYPE_KEYS)[number];
+  label: string;
+  value: number;
+  loading?: boolean;
+}) {
+  if (loading) {
+    return (
+      <div className="rounded-md border p-3">
+        <Skeleton className="mb-2 h-3 w-24" />
+        <Skeleton className="h-7 w-14" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-md border p-3">
+      <div className="text-muted-foreground mb-2 flex items-center gap-2 text-xs">
+        <AlertTypeIcon type={alertType} className="scale-[0.55]" />
+        <span>{label}</span>
+      </div>
+      <div className="text-lg font-semibold">{value}</div>
+    </div>
+  );
+}
+
 function MetricCard({
   label,
   value,
@@ -347,4 +406,28 @@ function getTopType(byType: DailyCounts) {
   }
 
   return top[0] as (typeof ALERT_TYPE_KEYS)[number];
+}
+
+function aggregateRiskWindowTotals(
+  riskSurface: ReadonlyArray<RiskSurfaceCell>,
+): DailyCounts {
+  const totals = createEmptyCounts();
+
+  for (const cell of riskSurface) {
+    for (const key of ALERT_TYPE_KEYS) {
+      totals[key] += cell.byTypeWindow[key];
+    }
+  }
+
+  return totals;
+}
+
+function createEmptyCounts(): DailyCounts {
+  return {
+    ACCIDENT: 0,
+    HAZARD: 0,
+    JAM: 0,
+    POLICE: 0,
+    ROAD_CLOSED: 0,
+  };
 }
