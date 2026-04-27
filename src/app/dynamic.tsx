@@ -14,7 +14,7 @@ export async function DynamicAlertData() {
 
   return await AppRuntime.runPromise(
     Effect.gen(function* () {
-      const timeline = yield* getSnapshotTimeline({ days: 30 });
+      const timeline = yield* getSnapshotTimeline({ days: 90 });
       const latestDate = timeline.dates.at(-1);
 
       if (!latestDate) {
