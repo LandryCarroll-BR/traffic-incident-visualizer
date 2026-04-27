@@ -277,14 +277,11 @@ function RiskInsightsOverlay({
       <div className="space-y-1">
         <div className="flex items-center gap-2 text-sm font-semibold">
           <FlameIcon className="text-destructive size-4" />
-          Top Risk Corridors (30d)
-        </div>
-        <div className="text-muted-foreground text-xs">
-          Ranked by composite score, confidence-adjusted.
+          Risk Corridors
         </div>
       </div>
 
-      <div className="space-y-2">
+      {/* <div className="space-y-2">
         {topRiskAreas.length === 0 ? (
           <div className="text-muted-foreground rounded-md border border-dashed p-3 text-xs">
             No corridor-level risk areas for this date.
@@ -312,7 +309,7 @@ function RiskInsightsOverlay({
             </button>
           ))
         )}
-      </div>
+      </div> */}
 
       {selectedRiskCell ? <RiskCellDrilldown cell={selectedRiskCell} /> : null}
     </div>
