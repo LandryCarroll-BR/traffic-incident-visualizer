@@ -7,6 +7,7 @@ import { MapLayout } from "@/components/map-layout";
 import { SnapshotDashboard } from "@/components/snapshot-dashboard";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AppRuntime } from "@/config/runtime";
+import { RISK_HISTORY_DAYS } from "@/models/snapshot-analytics";
 import { DatabaseService } from "@/services/database-service";
 
 export async function DynamicAlertData() {
@@ -14,7 +15,7 @@ export async function DynamicAlertData() {
 
   return await AppRuntime.runPromise(
     Effect.gen(function* () {
-      const timeline = yield* getSnapshotTimeline({ days: 90 });
+      const timeline = yield* getSnapshotTimeline({ days: RISK_HISTORY_DAYS });
       const latestDate = timeline.dates.at(-1);
 
       if (!latestDate) {

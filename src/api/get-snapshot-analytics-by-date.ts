@@ -14,7 +14,10 @@ import {
 } from "@/api/snapshot-metrics";
 import { addUtcDays, parseUtcDayKey, toUtcDayKey } from "@/lib/date";
 import { Alert, AlertId } from "@/models/alert";
-import type { SnapshotAnalyticsResponse } from "@/models/snapshot-analytics";
+import {
+  RISK_HISTORY_DAYS,
+  type SnapshotAnalyticsResponse,
+} from "@/models/snapshot-analytics";
 import { DatabaseService } from "@/services/database-service";
 
 class SnapshotAnalyticsError extends Data.TaggedError(
@@ -134,7 +137,8 @@ export const getSnapshotAnalyticsByDate = Effect.fn(
       aggregateMetricsFromAlerts(alerts),
     ),
   );
-  const riskWindowStart = addUtcDays(selectedDate, -29);
+  const riskWindowStart = addUtcDays(selectedDate, -(RISK_HISTORY_DAYS - 1));
+  const riskHistoryQueryTake = Math.max(RISK_HISTORY_DAYS * 8, 240);
 
   const candidateRiskSnapshots = yield* Effect.tryPromise({
     try: () =>
@@ -148,7 +152,7 @@ export const getSnapshotAnalyticsByDate = Effect.fn(
         orderBy: {
           createdAt: "desc",
         },
-        take: 240,
+        take: riskHistoryQueryTake,
         include: {
           snapshotTrafficAlerts: true,
         },
@@ -175,7 +179,7 @@ export const getSnapshotAnalyticsByDate = Effect.fn(
 
     riskByDay.set(dayKey, { alerts });
 
-    if (riskByDay.size >= 30) {
+    if (riskByDay.size >= RISK_HISTORY_DAYS) {
       break;
     }
   }

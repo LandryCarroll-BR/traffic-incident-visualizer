@@ -25,6 +25,7 @@ import { formatUtcDayLabel } from "@/lib/date";
 import { cn, formatSnakeCaseToTitleCase } from "@/lib/utils";
 import {
   ALERT_TYPE_KEYS,
+  RISK_HISTORY_DAYS,
   type RiskDailyPoint,
   type RiskSurfaceCell,
   type SnapshotAnalyticsResponse,
@@ -281,7 +282,7 @@ function RiskInsightsOverlay({
         </div>
       </div>
 
-      {/* <div className="space-y-2">
+      <div className="space-y-2">
         {topRiskAreas.length === 0 ? (
           <div className="text-muted-foreground rounded-md border border-dashed p-3 text-xs">
             No corridor-level risk areas for this date.
@@ -302,14 +303,14 @@ function RiskInsightsOverlay({
               </div>
               <div className="text-muted-foreground flex items-center justify-between text-[11px]">
                 <span>
-                  {area.accidentCount30d} accidents · {area.cellCount} cells
+                  {area.accidentCountWindow} accidents · {area.cellCount} cells
                 </span>
                 <span>{formatTrend(area.trend7dPct)}</span>
               </div>
             </button>
           ))
         )}
-      </div> */}
+      </div>
 
       {selectedRiskCell ? <RiskCellDrilldown cell={selectedRiskCell} /> : null}
     </div>
@@ -319,7 +320,7 @@ function RiskInsightsOverlay({
 function RiskCellDrilldown({ cell }: { cell: RiskSurfaceCell }) {
   const maxTypeCount = Math.max(
     1,
-    ...ALERT_TYPE_KEYS.map((type) => cell.byType30d[type]),
+    ...ALERT_TYPE_KEYS.map((type) => cell.byTypeWindow[type]),
   );
 
   return (
@@ -338,12 +339,14 @@ function RiskCellDrilldown({ cell }: { cell: RiskSurfaceCell }) {
         <StatChip
           icon={<MapPinIcon className="size-3" />}
           label="Recurrence"
-          value={`${cell.recurrenceDays30d} days`}
+          value={`${cell.recurrenceDaysWindow} days`}
         />
       </div>
 
       <div>
-        <div className="mb-1 text-[11px] font-medium">30-day pattern</div>
+        <div className="mb-1 text-[11px] font-medium">
+          {RISK_HISTORY_DAYS}-day pattern
+        </div>
         <MiniSparkline points={cell.daily} />
       </div>
 
@@ -352,7 +355,7 @@ function RiskCellDrilldown({ cell }: { cell: RiskSurfaceCell }) {
       <div className="space-y-1">
         <div className="text-[11px] font-medium">Type Breakdown</div>
         {ALERT_TYPE_KEYS.map((type) => {
-          const count = cell.byType30d[type];
+          const count = cell.byTypeWindow[type];
           const ratio = count / maxTypeCount;
 
           return (
@@ -396,7 +399,7 @@ function StatChip({
 }
 
 function MiniSparkline({ points }: { points: RiskDailyPoint[] }) {
-  const windowPoints = points.slice(-30);
+  const windowPoints = points.slice(-RISK_HISTORY_DAYS);
   const maxValue = Math.max(
     1,
     ...windowPoints.map((point) => point.totalIncidents),

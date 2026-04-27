@@ -27,7 +27,10 @@ import {
 } from "@/config/constants";
 import { cn, formatSnakeCaseToTitleCase } from "@/lib/utils";
 import { type Alert, AlertType } from "@/models/alert";
-import type { RiskSurfaceCell } from "@/models/snapshot-analytics";
+import {
+  RISK_HISTORY_DAYS,
+  type RiskSurfaceCell,
+} from "@/models/snapshot-analytics";
 
 export type AlertsMapMode = "points" | "risk-heat" | "accident-heat";
 
@@ -80,7 +83,7 @@ export function AlertsMap({
   );
   const maxAccidentCount = Math.max(
     1,
-    ...visibleRiskCells.map((cell) => cell.accidentCount30d),
+    ...visibleRiskCells.map((cell) => cell.accidentCountWindow),
   );
 
   return (
@@ -113,7 +116,7 @@ export function AlertsMap({
       ) : (
         visibleRiskCells.map((cell) => {
           const value =
-            mode === "risk-heat" ? cell.riskScore : cell.accidentCount30d;
+            mode === "risk-heat" ? cell.riskScore : cell.accidentCountWindow;
           const maxValue =
             mode === "risk-heat" ? maxRiskScore : maxAccidentCount;
           const isSelected = selectedRiskCellId === cell.cellId;
@@ -326,16 +329,19 @@ function RiskCellTooltip({
           Center: {cell.cellLat.toFixed(4)}, {cell.cellLng.toFixed(4)}
         </div>
         <div className="text-xs">
-          {mode === "risk-heat" ? "Risk Score" : "Accidents (30d)"}:{" "}
+          {mode === "risk-heat"
+            ? "Risk Score"
+            : `Accidents (${RISK_HISTORY_DAYS}d)`}:{" "}
           {mode === "risk-heat"
             ? cell.riskScore.toFixed(2)
-            : cell.accidentCount30d}
+            : cell.accidentCountWindow}
         </div>
         <div className="text-xs">
-          30d incidents: {cell.totalIncidents30d} ({cell.severeCount30d} severe)
+          {RISK_HISTORY_DAYS}d incidents: {cell.totalIncidentsWindow} (
+          {cell.severeCountWindow} severe)
         </div>
         <div className="text-xs">
-          Recurrence: {cell.recurrenceDays30d} days | Trend:{" "}
+          Recurrence: {cell.recurrenceDaysWindow} days | Trend:{" "}
           {formatTrend(cell.trend7dPct)}
         </div>
       </div>

@@ -2,6 +2,7 @@ import { addUtcDays, parseUtcDayKey, toUtcDayKey } from "@/lib/date";
 import type { Alert } from "@/models/alert";
 import {
   ALERT_TYPE_KEYS,
+  RISK_HISTORY_DAYS,
   type DailyCounts,
   type EmergingHotspot,
   type RiskDailyPoint,
@@ -42,10 +43,10 @@ type GridCellAccumulator = {
     north: number;
     east: number;
   };
-  byType30d: DailyCounts;
-  totalIncidents30d: number;
-  accidentCount30d: number;
-  severeCount30d: number;
+  byTypeWindow: DailyCounts;
+  totalIncidentsWindow: number;
+  accidentCountWindow: number;
+  severeCountWindow: number;
   weightedScore: number;
   dailyByDate: Map<string, DailyCounts>;
 };
@@ -67,7 +68,7 @@ export const buildRiskIntelligence = ({
   topRiskAreas: TopRiskArea[];
   emergingHotspots: EmergingHotspot[];
 } => {
-  const windowDates = buildWindowDates(selectedDate, 30);
+  const windowDates = buildWindowDates(selectedDate, RISK_HISTORY_DAYS);
   const alertsByDate = new Map(history.map((entry) => [entry.date, entry]));
   const cellAccumulators = new Map<string, GridCellAccumulator>();
 
@@ -99,23 +100,23 @@ export const buildRiskIntelligence = ({
           cellLat,
           cellLng,
           bounds: { south, west, north, east },
-          byType30d: createEmptyDailyCounts(),
-          totalIncidents30d: 0,
-          accidentCount30d: 0,
-          severeCount30d: 0,
+          byTypeWindow: createEmptyDailyCounts(),
+          totalIncidentsWindow: 0,
+          accidentCountWindow: 0,
+          severeCountWindow: 0,
           weightedScore: 0,
           dailyByDate: new Map<string, DailyCounts>(),
         } satisfies GridCellAccumulator);
 
-      accumulator.totalIncidents30d += 1;
-      accumulator.byType30d[alert.type] += 1;
+      accumulator.totalIncidentsWindow += 1;
+      accumulator.byTypeWindow[alert.type] += 1;
 
       if (alert.type === "ACCIDENT") {
-        accumulator.accidentCount30d += 1;
+        accumulator.accidentCountWindow += 1;
       }
 
       if (alert.type === "ACCIDENT" || alert.type === "ROAD_CLOSED") {
-        accumulator.severeCount30d += 1;
+        accumulator.severeCountWindow += 1;
       }
 
       accumulator.weightedScore +=
@@ -150,7 +151,7 @@ function toRiskSurfaceCell(
   cell: GridCellAccumulator,
   windowDates: string[],
 ): RiskSurfaceCellInternal {
-  let recurrenceDays30d = 0;
+  let recurrenceDaysWindow = 0;
   let incidents7d = 0;
   let incidentsPrev7d = 0;
   const daily: RiskDailyPoint[] = [];
@@ -162,7 +163,7 @@ function toRiskSurfaceCell(
     const daySevere = dayCounts.ACCIDENT + dayCounts.ROAD_CLOSED;
 
     if (dayTotal > 0) {
-      recurrenceDays30d += 1;
+      recurrenceDaysWindow += 1;
     }
 
     if (index >= windowDates.length - 7) {
@@ -180,8 +181,8 @@ function toRiskSurfaceCell(
   }
 
   const trend7dPct = calculateDeltaPct(incidents7d, incidentsPrev7d);
-  const volumeConfidence = 1 - Math.exp(-cell.totalIncidents30d / 8);
-  const recurrenceConfidence = Math.min(1, recurrenceDays30d / 8);
+  const volumeConfidence = 1 - Math.exp(-cell.totalIncidentsWindow / 8);
+  const recurrenceConfidence = Math.min(1, recurrenceDaysWindow / 8);
   const confidence = roundToTwo(
     clamp(volumeConfidence * 0.7 + recurrenceConfidence * 0.3, 0, 1),
   );
@@ -203,17 +204,17 @@ function toRiskSurfaceCell(
       col: cell.col,
       size: RISK_GRID_SIZE,
     },
-    totalIncidents30d: cell.totalIncidents30d,
-    accidentCount30d: cell.accidentCount30d,
-    severeCount30d: cell.severeCount30d,
-    recurrenceDays30d,
+    totalIncidentsWindow: cell.totalIncidentsWindow,
+    accidentCountWindow: cell.accidentCountWindow,
+    severeCountWindow: cell.severeCountWindow,
+    recurrenceDaysWindow,
     incidents7d,
     incidentsPrev7d,
     trend7dPct,
     weightedScore,
     confidence,
     riskScore,
-    byType30d: cell.byType30d,
+    byTypeWindow: cell.byTypeWindow,
     daily,
     row: cell.row,
     col: cell.col,
@@ -240,7 +241,7 @@ function calculateTopRiskAreas(
 
   const threshold = percentile(positiveScores, 0.7);
   const candidateCells = riskSurface.filter(
-    (cell) => cell.riskScore >= threshold || cell.accidentCount30d >= 2,
+    (cell) => cell.riskScore >= threshold || cell.accidentCountWindow >= 2,
   );
 
   if (candidateCells.length === 0) {
@@ -310,10 +311,10 @@ function aggregateCluster(
   cells: RiskSurfaceCellInternal[],
   windowDates: string[],
 ): Omit<TopRiskArea, "areaId" | "label"> {
-  const byType30d = createEmptyDailyCounts();
-  let totalIncidents30d = 0;
-  let accidentCount30d = 0;
-  let severeCount30d = 0;
+  const byTypeWindow = createEmptyDailyCounts();
+  let totalIncidentsWindow = 0;
+  let accidentCountWindow = 0;
+  let severeCountWindow = 0;
   let incidents7d = 0;
   let incidentsPrev7d = 0;
   let totalConfidence = 0;
@@ -339,9 +340,9 @@ function aggregateCluster(
   );
 
   for (const cell of cells) {
-    totalIncidents30d += cell.totalIncidents30d;
-    accidentCount30d += cell.accidentCount30d;
-    severeCount30d += cell.severeCount30d;
+    totalIncidentsWindow += cell.totalIncidentsWindow;
+    accidentCountWindow += cell.accidentCountWindow;
+    severeCountWindow += cell.severeCountWindow;
     incidents7d += cell.incidents7d;
     incidentsPrev7d += cell.incidentsPrev7d;
     totalConfidence += cell.confidence;
@@ -358,7 +359,7 @@ function aggregateCluster(
     east = Math.max(east, cell.bounds.east);
 
     for (const key of ALERT_TYPE_KEYS) {
-      byType30d[key] += cell.byType30d[key];
+      byTypeWindow[key] += cell.byTypeWindow[key];
     }
 
     for (let index = 0; index < windowDates.length; index += 1) {
@@ -373,13 +374,13 @@ function aggregateCluster(
     }
   }
 
-  const recurrenceDays30d = daily.filter(
+  const recurrenceDaysWindow = daily.filter(
     (point) => point.totalIncidents > 0,
   ).length;
 
   const severeMixPct =
-    totalIncidents30d > 0
-      ? roundToTwo((severeCount30d / totalIncidents30d) * 100)
+    totalIncidentsWindow > 0
+      ? roundToTwo((severeCountWindow / totalIncidentsWindow) * 100)
       : 0;
 
   return {
@@ -394,17 +395,17 @@ function aggregateCluster(
     },
     cellIds: cells.map((cell) => cell.cellId),
     cellCount: cells.length,
-    totalIncidents30d,
-    accidentCount30d,
-    severeCount30d,
+    totalIncidentsWindow,
+    accidentCountWindow,
+    severeCountWindow,
     severeMixPct,
-    recurrenceDays30d,
+    recurrenceDaysWindow,
     incidents7d,
     incidentsPrev7d,
     trend7dPct: calculateDeltaPct(incidents7d, incidentsPrev7d),
     confidence: roundToTwo(totalConfidence / cells.length),
     riskScore: roundToTwo(totalRiskScore),
-    byType30d,
+    byTypeWindow,
     daily,
   };
 }

@@ -2,11 +2,12 @@ import { Effect } from "effect";
 import { getSnapshotTimeline } from "@/api/get-snapshot-timeline";
 import { AppRuntime } from "@/config/runtime";
 import { injectInboundContext } from "@/lib/inject-inbound-context";
+import { RISK_HISTORY_DAYS } from "@/models/snapshot-analytics";
 import { DatabaseService } from "@/services/database-service";
 
 const MIN_DAYS = 7;
-const MAX_DAYS = 90;
-const DEFAULT_DAYS = 30;
+const MAX_DAYS = RISK_HISTORY_DAYS;
+const DEFAULT_DAYS = RISK_HISTORY_DAYS;
 
 export const GET = injectInboundContext((request) => {
   const url = new URL(request.url);

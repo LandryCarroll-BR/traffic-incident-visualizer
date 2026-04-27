@@ -1,5 +1,7 @@
 import type { Alert } from "@/models/alert";
 
+export const RISK_HISTORY_DAYS = 90;
+
 export const ALERT_TYPE_KEYS = [
   "ACCIDENT",
   "HAZARD",
@@ -50,17 +52,17 @@ export type RiskSurfaceCell = {
     col: number;
     size: number;
   };
-  totalIncidents30d: number;
-  accidentCount30d: number;
-  severeCount30d: number;
-  recurrenceDays30d: number;
+  totalIncidentsWindow: number;
+  accidentCountWindow: number;
+  severeCountWindow: number;
+  recurrenceDaysWindow: number;
   incidents7d: number;
   incidentsPrev7d: number;
   trend7dPct: number | null;
   weightedScore: number;
   confidence: number;
   riskScore: number;
-  byType30d: DailyCounts;
+  byTypeWindow: DailyCounts;
   daily: RiskDailyPoint[];
 };
 
@@ -73,17 +75,17 @@ export type TopRiskArea = {
   bounds: RiskBounds;
   cellIds: string[];
   cellCount: number;
-  totalIncidents30d: number;
-  accidentCount30d: number;
-  severeCount30d: number;
+  totalIncidentsWindow: number;
+  accidentCountWindow: number;
+  severeCountWindow: number;
   severeMixPct: number;
-  recurrenceDays30d: number;
+  recurrenceDaysWindow: number;
   incidents7d: number;
   incidentsPrev7d: number;
   trend7dPct: number | null;
   confidence: number;
   riskScore: number;
-  byType30d: DailyCounts;
+  byTypeWindow: DailyCounts;
   daily: RiskDailyPoint[];
 };
 
