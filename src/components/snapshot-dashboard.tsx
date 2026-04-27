@@ -64,6 +64,9 @@ export function SnapshotDashboard({
     !initialAnalytics && initialTimeline.dates.length > 0,
   );
   const [mapMode, setMapMode] = useState<AlertsMapMode>("points");
+  const [selectedRiskAreaId, setSelectedRiskAreaId] = useState<string | null>(
+    initialAnalytics?.topRiskAreas.at(0)?.areaId ?? null,
+  );
   const [selectedRiskCellId, setSelectedRiskCellId] = useState<string | null>(
     initialAnalytics?.topRiskAreas.at(0)?.primaryCellId ??
       initialAnalytics?.riskSurface.at(0)?.cellId ??
@@ -75,6 +78,19 @@ export function SnapshotDashboard({
   const selectedDate = initialTimeline.dates[selectedIndex];
   const riskSurface = analytics?.riskSurface ?? [];
   const topRiskAreas = analytics?.topRiskAreas ?? [];
+  const riskAreaByCellId = useMemo(() => {
+    const areaMap = new Map<string, TopRiskArea>();
+
+    for (const area of topRiskAreas) {
+      for (const cellId of area.cellIds) {
+        areaMap.set(cellId, area);
+      }
+    }
+
+    return areaMap;
+  }, [topRiskAreas]);
+  const selectedRiskArea =
+    topRiskAreas.find((area) => area.areaId === selectedRiskAreaId) ?? null;
   const selectedRiskCell =
     riskSurface.find((cell) => cell.cellId === selectedRiskCellId) ?? null;
 
@@ -131,10 +147,12 @@ export function SnapshotDashboard({
   }, [analytics?.date, selectedDate]);
 
   useEffect(() => {
+    const defaultAreaId = analytics?.topRiskAreas.at(0)?.areaId ?? null;
     const defaultCellId =
       analytics?.topRiskAreas.at(0)?.primaryCellId ??
       analytics?.riskSurface.at(0)?.cellId ??
       null;
+    setSelectedRiskAreaId(defaultAreaId);
     setSelectedRiskCellId(defaultCellId);
   }, [analytics?.topRiskAreas, analytics?.riskSurface]);
 
@@ -181,8 +199,14 @@ export function SnapshotDashboard({
                 alerts={analytics?.alerts ?? []}
                 mode={mapMode}
                 riskSurface={riskSurface}
+                selectedRiskCellIds={selectedRiskArea?.cellIds}
                 selectedRiskCellId={selectedRiskCellId}
-                onRiskCellSelect={setSelectedRiskCellId}
+                onRiskCellSelect={(cellId) => {
+                  setSelectedRiskCellId(cellId);
+                  setSelectedRiskAreaId(
+                    riskAreaByCellId.get(cellId)?.areaId ?? null,
+                  );
+                }}
               />
 
               <div className="pointer-events-none absolute inset-x-3 top-3 z-[1050] flex items-start justify-between gap-3">
@@ -195,8 +219,10 @@ export function SnapshotDashboard({
                 {mapMode !== "points" && analytics ? (
                   <RiskInsightsOverlay
                     topRiskAreas={topRiskAreas}
+                    selectedRiskAreaId={selectedRiskAreaId}
                     selectedRiskCell={selectedRiskCell}
                     onAreaSelect={(area) => {
+                      setSelectedRiskAreaId(area.areaId);
                       setSelectedRiskCellId(area.primaryCellId);
                     }}
                   />
@@ -266,10 +292,12 @@ function MapModeButton({
 
 function RiskInsightsOverlay({
   topRiskAreas,
+  selectedRiskAreaId,
   selectedRiskCell,
   onAreaSelect,
 }: {
   topRiskAreas: TopRiskArea[];
+  selectedRiskAreaId: string | null;
   selectedRiskCell: RiskSurfaceCell | null;
   onAreaSelect: (area: TopRiskArea) => void;
 }) {
@@ -293,7 +321,11 @@ function RiskInsightsOverlay({
               key={area.areaId}
               type="button"
               onClick={() => onAreaSelect(area)}
-              className="hover:bg-muted/60 w-full rounded-md border p-2 text-left transition"
+              className={cn(
+                "hover:bg-muted/60 w-full rounded-md border p-2 text-left transition",
+                selectedRiskAreaId === area.areaId &&
+                  "border-foreground bg-muted/40",
+              )}
             >
               <div className="mb-1 flex items-center justify-between gap-2">
                 <span className="text-xs font-semibold">{area.label}</span>

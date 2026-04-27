@@ -39,6 +39,7 @@ type AlertsMapProps = {
   mode: AlertsMapMode;
   riskSurface: RiskSurfaceCell[];
   selectedRiskCellId?: string | null;
+  selectedRiskCellIds?: string[];
   onRiskCellSelect?: (cellId: string) => void;
 };
 
@@ -49,6 +50,7 @@ export function AlertsMap({
   mode,
   riskSurface,
   selectedRiskCellId,
+  selectedRiskCellIds = [],
   onRiskCellSelect,
 }: AlertsMapProps) {
   const layers = alerts
@@ -73,7 +75,10 @@ export function AlertsMap({
 
   const isPointMode = mode === "points";
   const visibleRiskCells = riskSurface.slice(0, HEAT_CELL_LIMIT);
-  const hasSelectedHeatCell = !isPointMode && selectedRiskCellId !== null;
+  const selectedRiskCellIdSet = new Set(selectedRiskCellIds);
+  const hasSelectedHeatCell =
+    !isPointMode &&
+    (selectedRiskCellId !== null || selectedRiskCellIdSet.size > 0);
   const selectedHeatCell = hasSelectedHeatCell
     ? visibleRiskCells.find((cell) => cell.cellId === selectedRiskCellId)
     : undefined;
@@ -120,6 +125,8 @@ export function AlertsMap({
           const maxValue =
             mode === "risk-heat" ? maxRiskScore : maxAccidentCount;
           const isSelected = selectedRiskCellId === cell.cellId;
+          const isInSelectedCorridor = selectedRiskCellIdSet.has(cell.cellId);
+          const isHighlighted = isSelected || isInSelectedCorridor;
           const color = getHeatColor(value, maxValue);
 
           return (
@@ -130,12 +137,26 @@ export function AlertsMap({
                 [cell.bounds.north, cell.bounds.east],
               ]}
               pathOptions={{
-                color: isSelected ? "hsl(var(--foreground))" : color,
+                color: isHighlighted ? "hsl(var(--foreground))" : color,
                 fillColor: color,
-                weight: isSelected ? 2.5 : hasSelectedHeatCell ? 0.5 : 1,
-                opacity: isSelected ? 1 : hasSelectedHeatCell ? 0.75 : 0.75,
+                weight: isSelected
+                  ? 2.5
+                  : isInSelectedCorridor
+                    ? 1.5
+                    : hasSelectedHeatCell
+                      ? 0.5
+                      : 1,
+                opacity: isSelected
+                  ? 1
+                  : isInSelectedCorridor
+                    ? 0.95
+                    : hasSelectedHeatCell
+                      ? 0.75
+                      : 0.75,
                 fillOpacity: isSelected
                   ? 0.9
+                  : isInSelectedCorridor
+                    ? 0.72
                   : hasSelectedHeatCell
                     ? 0.22
                     : 0.6,
